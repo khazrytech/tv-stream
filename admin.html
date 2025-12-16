@@ -1299,7 +1299,12 @@
     <script>
 
 
-        const API_BASE = window.location.origin;
+        let API_BASE = window.location.origin;
+        // If running from file system or Live Server (usually port 5500), point to default server port 8080
+        if (API_BASE === 'null' || API_BASE.startsWith('file://') || API_BASE.includes(':5500')) {
+            API_BASE = 'http://localhost:8080';
+            console.log('Development mode detected. Setting API_BASE to:', API_BASE);
+        }
 
         // Ensure we can actually reach the server before doing anything else
         console.log('Admin Dashboard initialized. API_BASE:', API_BASE);
@@ -1564,7 +1569,7 @@
                 })
                 .catch(err => {
                     console.error(err);
-                    alert('Kufuta playlist kimeshindikana.');
+                    alert('Kufuta playlist kimeshindikana: ' + err.message);
                     setStatus(false, 'Delete Error');
                 });
         }
@@ -1847,7 +1852,7 @@
                         }
                     }
 
-                    formError.textContent = errorMessage;
+                    formError.textContent = errorMessage + ` (${err.message})`;
                     formSuccess.style.display = 'none';
                     setStatus(false, 'Save Error');
                 });
@@ -1977,7 +1982,8 @@
                 .catch(err => {
                     console.error(err);
                     setStatus(false, 'Delete Error');
-                    alert('Kufuta kimeshindikana. Jaribu tena.');
+                    // Show detailed error in alert
+                    alert('Kufuta kimeshindikana: ' + (err.message || 'Unknown error'));
                 });
         };
 
@@ -2080,7 +2086,7 @@
                 })
                 .catch(err => {
                     console.error(err);
-                    alert('Kufuta kimeshindikana. Jaribu tena.');
+                    alert('Kufuta kimeshindikana: ' + err.message);
                 });
         };
 
