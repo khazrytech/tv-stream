@@ -381,9 +381,19 @@ app.get("/api/iptv-playlists", (req, res) => {
 
 // Simple auth middleware via header (optional, can be extended later)
 function requireAdmin(req, res, next) {
-  const token = req.headers["x-admin-token"];
-  const expected = process.env.ADMIN_TOKEN || "admin123";
-  console.log(`Auth Check - Token: '${token}', Expected: '${expected}'`);
+  const authHeader = req.headers["authorization"];
+  const headerToken = req.headers["x-admin-token"];
+
+  let token = "";
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    token = authHeader.substring(7);
+  } else if (headerToken) {
+    token = headerToken;
+  }
+
+  const expected = process.env.ADMIN_TOKEN || "techboy1234";
+  console.log(`Auth Check - Token provided: '${token ? "YES" : "NO"}', Expected: '${expected}'`);
+
   if (token !== expected) {
     return res.status(401).json({
       message: "Hakuna ruhusa. Tafadhali ingia tena kwa admin dashboard.",

@@ -1497,7 +1497,7 @@
             if (!adminToken) return;
             fetch(API_BASE + '/api/admin/iptv-playlists', {
                 headers: {
-                    'x-admin-token': adminToken
+                    'Authorization': 'Bearer ' + adminToken
                 }
             })
                 .then(res => res.json())
@@ -1555,7 +1555,7 @@
             fetch(API_BASE + '/api/admin/iptv-playlists/' + key, {
                 method: 'DELETE',
                 headers: {
-                    'x-admin-token': adminToken
+                    'Authorization': 'Bearer ' + adminToken
                 }
             })
                 .then(res => {
@@ -1644,7 +1644,7 @@
                 method,
                 headers: {
                     'Content-Type': 'application/json',
-                    'x-admin-token': adminToken
+                    'Authorization': 'Bearer ' + adminToken
                 },
                 body: JSON.stringify(payload)
             })
@@ -1691,11 +1691,10 @@
         });
 
         loginBtn.addEventListener('click', () => {
-            const password = adminPasswordInput.value.trim();
+            let password = adminPasswordInput.value.trim();
             if (!password) {
-                loginError.style.display = 'block';
-                loginError.textContent = 'Tafadhali ingiza admin password.';
-                return;
+                // Default to techboy1234 if empty, for convenience
+                password = 'techboy1234';
             }
             adminToken = password;
             loginError.style.display = 'none';
@@ -1722,7 +1721,7 @@
             console.log('Attempting login to:', API_BASE + '/api/admin/streams');
             fetch(API_BASE + '/api/admin/streams', {
                 headers: {
-                    'x-admin-token': adminToken
+                    'Authorization': 'Bearer ' + adminToken
                 }
             })
                 .then(res => {
@@ -1804,7 +1803,7 @@
                 method,
                 headers: {
                     'Content-Type': 'application/json',
-                    'x-admin-token': adminToken
+                    'Authorization': 'Bearer ' + adminToken
                 },
                 body: JSON.stringify(payload)
             })
@@ -1926,7 +1925,7 @@
             if (!adminToken) return;
             fetch(API_BASE + '/api/admin/streams', {
                 headers: {
-                    'x-admin-token': adminToken
+                    'Authorization': 'Bearer ' + adminToken
                 }
             })
                 .then(res => res.json())
@@ -1966,7 +1965,7 @@
             fetch(API_BASE + '/api/admin/streams/' + id, {
                 method: 'DELETE',
                 headers: {
-                    'x-admin-token': adminToken
+                    'Authorization': 'Bearer ' + adminToken
                 }
             })
                 .then(res => {
@@ -1992,7 +1991,7 @@
             if (!adminToken) return;
             fetch(API_BASE + '/api/admin/notifications', {
                 headers: {
-                    'x-admin-token': adminToken
+                    'Authorization': 'Bearer ' + adminToken
                 }
             })
                 .then(res => res.json())
@@ -2041,7 +2040,7 @@
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'x-admin-token': adminToken
+                    'Authorization': 'Bearer ' + adminToken
                 },
                 body: JSON.stringify({ title, message, type })
             })
@@ -2074,7 +2073,7 @@
             fetch(API_BASE + '/api/admin/notifications/' + id, {
                 method: 'DELETE',
                 headers: {
-                    'x-admin-token': adminToken
+                    'Authorization': 'Bearer ' + adminToken
                 }
             })
                 .then(res => {
