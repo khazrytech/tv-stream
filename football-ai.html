@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚽ AI Football Predictions - TV Stream PRO</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #00D9FF;
+            --secondary: #7B2FFF;
+            --accent: #FF2E97;
+            --dark: #0A0E27;
+            --darker: #060918;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+            --text: #FFFFFF;
+            --text-muted: rgba(255, 255, 255, 0.6);
+            --gradient: linear-gradient(135deg, #00D9FF 0%, #7B2FFF 50%, #FF2E97 100%);
+            --success: #00FF88;
+            --danger: #FF3366;
+        }
+
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--darker);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Gradient Background */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(0, 217, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(123, 47, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(255, 46, 151, 0.1) 0%, transparent 50%);
+            animation: gradientShift 15s ease infinite;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes gradientShift {
+
+            0%,
+            100% {
+                opacity: 0.5;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.8;
+                transform: scale(1.1);
+            }
+        }
+
+        /* Fixed Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(10, 14, 39, 0.85);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo i {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2rem;
+        }
+
+        .nav {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .nav-link {
+            padding: 0.625rem 1.25rem;
+            border-radius: 999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--gradient);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .nav-link:hover {
+            color: var(--text);
+            transform: translateY(-2px);
+        }
+
+        .nav-link:hover::before {
+            opacity: 0.15;
+        }
+
+        /* Main Content */
+        .main {
+            position: relative;
+            z-index: 1;
+            padding-top: 5rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        .hero-badge i {
+            color: var(--primary);
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 0.6s ease 0.2s both;
+        }
+
+        .hero-subtitle {
+            font-size: 1.125rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            animation: fadeInUp 0.6s ease 0.4s both;
+        }
+
+        /* Matches Grid */
+        .matches-section {
+            margin-bottom: 3rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.6s ease 0.6s both;
+        }
+
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-title i {
+            color: var(--primary);
+        }
+
+        .matches-count {
+            padding: 0.5rem 1rem;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .matches-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Match Card */
+        .match-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.6s ease calc(0.8s + var(--delay, 0s)) both;
+        }
+
+        .match-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--gradient);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .match-card>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        .match-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(0, 217, 255, 0.5);
+            box-shadow:
+                0 20px 40px rgba(0, 217, 255, 0.2),
+                0 0 80px rgba(123, 47, 255, 0.1);
+        }
+
+        .match-card:hover::before {
+            opacity: 0.05;
+        }
+
+        .match-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+        }
+
+        .league-name {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--primary);
+        }
+
+        .match-time {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+
+        .match-time i {
+            font-size: 1rem;
+        }
+
+        .teams {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+            gap: 1rem;
+        }
+
+        .team {
+            flex: 1;
+            text-align: center;
+        }
+
+        .team-name {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .team-form {
+            display: flex;
+            gap: 0.25rem;
+            justify-content: center;
+        }
+
+        .form-indicator {
+            width: 0.5rem;
+            height: 0.5rem;
+            border-radius: 50%;
+            background: var(--text-muted);
+        }
+
+        .form-indicator.win {
+            background: var(--success);
+        }
+
+        .form-indicator.draw {
+            background: #FFB800;
+        }
+
+        .form-indicator.loss {
+            background: var(--danger);
+        }
+
+        .vs-divider {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1rem;
+            box-shadow: 0 8px 24px rgba(0, 217, 255, 0.3);
+            flex-shrink: 0;
+        }
+
+        .match-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .match-venue {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+
+        .predict-btn {
+            padding: 0.5rem 1rem;
+            background: var(--gradient);
+            border: none;
+            border-radius: 999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .predict-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 217, 255, 0.4);
+        }
+
+        /* Prediction Modal */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--dark);
+            border: 1px solid var(--border);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .close-modal:hover {
+            background: var(--danger);
+            border-color: var(--danger);
+        }
+
+        .prediction-header {
+            margin-bottom: 2rem;
+        }
+
+        .prediction-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .prediction-subtitle {
+            color: var(--text-muted);
+        }
+
+        .prediction-result {
+            display: none;
+        }
+
+        .prediction-result.show {
+            display: block;
+        }
+
+        .result-card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .result-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .result-value {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.75rem;
+        }
+
+        .result-bar {
+            height: 0.75rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 999px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .result-fill {
+            height: 100%;
+            background: var(--gradient);
+            border-radius: 999px;
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .result-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 3rem 0;
+        }
+
+        .spinner {
+            width: 3rem;
+            height: 3rem;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes shimmer {
+            to {
+                left: 100%;
+            }
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-container {
+                padding: 0 1rem;
+            }
+
+            .nav {
+                display: none;
+            }
+
+            .hero {
+                padding: 2rem 0;
+            }
+
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .matches-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .teams {
+                flex-direction: column;
+            }
+
+            .vs-divider {
+                transform: rotate(90deg);
+                margin: 0.5rem 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            .match-card {
+                padding: 1.25rem;
+            }
+
+            .modal-content {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .empty-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-subtitle {
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <i class="fas fa-brain"></i>
+                <span>AI Predictions</span>
+            </div>
+            <nav class="nav">
+                <a href="./TV-Stream-PRO.html" class="nav-link">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <a href="./match-odds.html" class="nav-link">
+                    <i class="fas fa-chart-line"></i> Match Odds
+                </a>
+                <a href="./TV-Stream-PRO.html#live-tv" class="nav-link">
+                    <i class="fas fa-satellite-dish"></i> Live TV
+                </a>
+                <a href="./TV-Stream-PRO.html#sports" class="nav-link">
+                    <i class="fas fa-football"></i> Sports
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main -->
+    <main class="main">
+        <div class="container">
+            <!-- Hero -->
+            <section class="hero">
+                <div class="hero-badge">
+                    <i class="fas fa-sparkles"></i>
+                    <span>AI-Powered Football Predictions</span>
+                </div>
+                <h1 class="hero-title">Predict Match<br>Outcomes</h1>
+                <p class="hero-subtitle">Advanced AI analyzes team form, statistics, and historical data to provide
+                    accurate match predictions</p>
+            </section>
+
+            <!-- Matches Section -->
+            <section class="matches-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-calendar-day"></i>
+                        Today's Fixtures
+                    </h2>
+                    <div class="matches-count" id="matchesCount">0 Matches</div>
+                </div>
+
+                <!-- Loading State -->
+                <div class="loading-state" id="loadingState">
+                    <div class="spinner"></div>
+                    <p style="color: var(--text-muted);">Fetching today's matches...</p>
+                </div>
+
+                <!-- Matches Grid -->
+                <div class="matches-grid" id="matchesGrid" style="display: none;"></div>
+
+                <!-- Empty State -->
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <i class="fas fa-calendar-xmark empty-icon"></i>
+                    <h3 class="empty-title">No Matches Today</h3>
+                    <p class="empty-subtitle">Check back later for upcoming fixtures</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Prediction Modal -->
+    <div class="modal" id="predictionModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <div class="prediction-header">
+                <h3 class="prediction-title" id="modalTitle">Match Prediction</h3>
+                <p class="prediction-subtitle" id="modalSubtitle"></p>
+            </div>
+
+            <div class="loading-state" id="modalLoading">
+                <div class="spinner"></div>
+                <p style="color: var(--text-muted);">Analyzing match data...</p>
+            </div>
+
+            <div class="prediction-result" id="predictionResult"></div>
+        </div>
+    </div>
+
+    <script>
+        let matches = [];
+        let selectedMatch = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadMatches();
+        });
+
+        // Load matches from API
+        async function loadMatches() {
+            const loadingState = document.getElementById('loadingState');
+            const matchesGrid = document.getElementById('matchesGrid');
+            const emptyState = document.getElementById('emptyState');
+            const matchesCount = document.getElementById('matchesCount');
+
+            try {
+                const response = await fetch('/api/football-fixtures');
+                const data = await response.json();
+
+                loadingState.style.display = 'none';
+
+                if (data.success && data.fixtures && data.fixtures.length > 0) {
+                    matches = data.fixtures;
+                    renderMatches();
+                    matchesGrid.style.display = 'grid';
+                    matchesCount.textContent = `${matches.length} Matches`;
+                } else {
+                    emptyState.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error loading matches:', error);
+                loadingState.style.display = 'none';
+                emptyState.style.display = 'block';
+            }
+        }
+
+        // Render matches
+        function renderMatches() {
+            const grid = document.getElementById('matchesGrid');
+            grid.innerHTML = matches.map((match, index) => `
+                <div class="match-card" style="--delay: ${index * 0.1}s" onclick="showPrediction(${index})">
+                    <div class="match-header">
+                        <span class="league-name">${match.league}</span>
+                        <span class="match-time">
+                            <i class="fas fa-clock"></i>
+                            ${match.kickoff}
+                        </span>
+                    </div>
+                    
+                    <div class="teams">
+                        <div class="team">
+                            <div class="team-name">${match.home}</div>
+                            <div class="team-form">
+                                ${generateFormIndicators()}
+                            </div>
+                        </div>
+                        
+                        <div class="vs-divider">VS</div>
+                        
+                        <div class="team">
+                            <div class="team-name">${match.away}</div>
+                            <div class="team-form">
+                                ${generateFormIndicators()}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="match-footer">
+                        <span class="match-venue">
+                            <i class="fas fa-location-dot"></i>
+                            ${match.venue}
+                        </span>
+                        <button class="predict-btn">
+                            <i class="fas fa-brain"></i>
+                            Predict
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Generate random form indicators
+        function generateFormIndicators() {
+            const forms = ['win', 'draw', 'loss'];
+            let html = '';
+            for (let i = 0; i < 5; i++) {
+                const randomForm = forms[Math.floor(Math.random() * forms.length)];
+                html += `<span class="form-indicator ${randomForm}"></span>`;
+            }
+            return html;
+        }
+
+        // Show prediction modal
+        async function showPrediction(index) {
+            selectedMatch = matches[index];
+            const modal = document.getElementById('predictionModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalSubtitle = document.getElementById('modalSubtitle');
+            const modalLoading = document.getElementById('modalLoading');
+            const predictionResult = document.getElementById('predictionResult');
+
+            modalTitle.textContent = 'AI Match Prediction';
+            modalSubtitle.textContent = `${selectedMatch.home} vs ${selectedMatch.away}`;
+
+            modal.classList.add('active');
+            modalLoading.style.display = 'block';
+            predictionResult.classList.remove('show');
+
+            // Simulate AI prediction (replace with actual API call)
+            setTimeout(() => {
+                const prediction = calculatePrediction(selectedMatch);
+                displayPrediction(prediction);
+                modalLoading.style.display = 'none';
+                predictionResult.classList.add('show');
+            }, 2000);
+        }
+
+        // Calculate prediction
+        function calculatePrediction(match) {
+            const homeForm = match.metrics?.homeForm || 0.5;
+            const awayForm = match.metrics?.awayForm || 0.5;
+            const homeAdv = 0.1;
+
+            let homeWin = (homeForm * 0.6 + homeAdv) * 100;
+            let awayWin = (awayForm * 0.6) * 100;
+            let draw = 100 - homeWin - awayWin;
+
+            // Normalize
+            const total = homeWin + draw + awayWin;
+            homeWin = Math.round((homeWin / total) * 100);
+            awayWin = Math.round((awayWin / total) * 100);
+            draw = 100 - homeWin - awayWin;
+
+            return { homeWin, draw, awayWin };
+        }
+
+        // Display prediction
+        function displayPrediction(prediction) {
+            const resultDiv = document.getElementById('predictionResult');
+            resultDiv.innerHTML = `
+                <div class="result-card">
+                    <div class="result-label">${selectedMatch.home} Win</div>
+                    <div class="result-value">${prediction.homeWin}%</div>
+                    <div class="result-bar">
+                        <div class="result-fill" style="width: ${prediction.homeWin}%"></div>
+                    </div>
+                </div>
+                
+                <div class="result-card">
+                    <div class="result-label">Draw</div>
+                    <div class="result-value">${prediction.draw}%</div>
+                    <div class="result-bar">
+                        <div class="result-fill" style="width: ${prediction.draw}%"></div>
+                    </div>
+                </div>
+                
+                <div class="result-card">
+                    <div class="result-label">${selectedMatch.away} Win</div>
+                    <div class="result-value">${prediction.awayWin}%</div>
+                    <div class="result-bar">
+                        <div class="result-fill" style="width: ${prediction.awayWin}%"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('predictionModal').classList.remove('active');
+        }
+
+        // Close on outside click
+        document.getElementById('predictionModal').addEventListener('click', (e) => {
+            if (e.target.id === 'predictionModal') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📺 TV Stream PRO - Modern</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://vjs.zencdn.net/8.6.1/video-js.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #00D9FF;
+            --secondary: #7B2FFF;
+            --accent: #FF2E97;
+            --dark: #0A0E27;
+            --darker: #060918;
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+            --text: #FFFFFF;
+            --text-muted: rgba(255, 255, 255, 0.6);
+            --gradient: linear-gradient(135deg, #00D9FF 0%, #7B2FFF 50%, #FF2E97 100%);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--darker);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(0, 217, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(123, 47, 255, 0.15) 0%, transparent 50%);
+            animation: gradientShift 15s ease infinite;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes gradientShift {
+
+            0%,
+            100% {
+                opacity: 0.5;
+            }
+
+            50% {
+                opacity: 0.8;
+            }
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(10, 14, 39, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo i {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2rem;
+        }
+
+        .search-container {
+            flex: 1;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 3rem 0.75rem 1rem;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            color: var(--text);
+            font-size: 0.875rem;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .nav-link {
+            padding: 0.625rem 1.25rem;
+            border-radius: 999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--gradient);
+            border-radius: 999px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .nav-link span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .nav-link:hover {
+            color: var(--text);
+        }
+
+        .nav-link:hover::before {
+            opacity: 0.15;
+        }
+
+        /* Main */
+        .main {
+            position: relative;
+            z-index: 1;
+            padding-top: 5rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 3rem 0;
+            margin-bottom: 3rem;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .hero-subtitle {
+            font-size: 1.125rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+            animation: fadeInUp 0.6s ease 0.2s both;
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 4rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-title i {
+            color: var(--primary);
+        }
+
+        .section-count {
+            padding: 0.5rem 1rem;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        /* Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Card */
+        .content-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 1.25rem;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            animation: fadeInUp 0.6s ease calc(0.1s * var(--index, 0)) both;
+        }
+
+        .content-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--gradient);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .content-card>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        .content-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(0, 217, 255, 0.5);
+            box-shadow: 0 20px 40px rgba(0, 217, 255, 0.2);
+        }
+
+        .content-card:hover::before {
+            opacity: 0.05;
+        }
+
+        .card-thumbnail {
+            width: 100%;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            background: linear-gradient(135deg, var(--dark), var(--darker));
+        }
+
+        .card-content {
+            padding: 1.25rem;
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .card-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+        }
+
+        .card-badge {
+            padding: 0.25rem 0.625rem;
+            background: var(--gradient);
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        /* Video Modal */
+        .video-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .video-modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .video-container {
+            width: 100%;
+            max-width: 1200px;
+            position: relative;
+        }
+
+        .close-video {
+            position: absolute;
+            top: -3rem;
+            right: 0;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+        }
+
+        .close-video:hover {
+            background: var(--accent);
+            transform: scale(1.1);
+        }
+
+        .video-js {
+            width: 100%;
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 4rem 0;
+        }
+
+        .spinner {
+            width: 3rem;
+            height: 3rem;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .empty-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-container {
+                padding: 0 1rem;
+            }
+
+            .search-container {
+                order: 3;
+                flex-basis: 100%;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                padding: 2rem 0;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <i class="fas fa-tv"></i>
+                <span>TV Stream PRO</span>
+            </div>
+
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Search..." id="searchInput">
+                <i class="fas fa-search search-icon"></i>
+            </div>
+
+            <nav class="nav-links">
+                <a href="./football-ai.html" class="nav-link">
+                    <span><i class="fas fa-brain"></i> AI Predictions</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main -->
+    <main class="main">
+        <div class="container">
+            <!-- Hero -->
+            <section class="hero">
+                <h1 class="hero-title">Stream Anything<br>Anywhere</h1>
+                <p class="hero-subtitle">Watch your favorite TV channels, movies, and sports in high quality</p>
+            </section>
+
+            <!-- Categories will be loaded here -->
+            <div id="categoriesContainer"></div>
+        </div>
+    </main>
+
+    <!-- Video Modal -->
+    <div class="video-modal" id="videoModal">
+        <div class="video-container">
+            <button class="close-video" onclick="closeVideo()">
+                <i class="fas fa-times"></i>
+            </button>
+            <video id="player" class="video-js vjs-default-skin" controls preload="auto"></video>
+        </div>
+    </div>
+
+    <script src="https://vjs.zencdn.net/8.6.1/video.min.js"></script>
+    <script>
+        let player = null;
+        let allStreams = {};
+        let searchQuery = '';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadContent();
+            setupSearch();
+        });
+
+        // Load content from API
+        async function loadContent() {
+            try {
+                const response = await fetch('/api/streams');
+                const data = await response.json();
+                allStreams = data;
+                renderCategories();
+            } catch (error) {
+                console.error('Error loading content:', error);
+                showError();
+            }
+        }
+
+        // Render categories
+        function renderCategories() {
+            const container = document.getElementById('categoriesContainer');
+            const categories = Object.entries(allStreams).filter(([_, cat]) => cat.items && cat.items.length > 0);
+
+            if (categories.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-tv empty-icon"></i>
+                        <h3 class="empty-title">No Content Available</h3>
+                        <p style="color: var(--text-muted);">Check back later for new content</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = categories.map(([catId, category]) => {
+                const filteredItems = searchQuery
+                    ? category.items.filter(item =>
+                        item.title.toLowerCase().includes(searchQuery.toLowerCase())
+                    )
+                    : category.items;
+
+                if (filteredItems.length === 0) return '';
+
+                return `
+                    <section class="section">
+                        <div class="section-header">
+                            <h2 class="section-title">
+                                <i class="fas fa-${getCategoryIcon(catId)}"></i>
+                                ${category.title}
+                            </h2>
+                            <div class="section-count">${filteredItems.length} items</div>
+                        </div>
+                        <div class="content-grid">
+                            ${filteredItems.slice(0, 12).map((item, index) => `
+                                <div class="content-card" style="--index: ${index}" onclick="playVideo('${item.streamUrl}', '${item.title}')">
+                                    ${item.thumbnail ? `<img src="${item.thumbnail}" alt="${item.title}" class="card-thumbnail">` : ''}
+                                    <div class="card-content">
+                                        <h3 class="card-title">${item.title}</h3>
+                                        <div class="card-meta">
+                                            ${item.year ? `<span>${item.year}</span>` : ''}
+                                            ${item.rating ? `<span class="card-badge">⭐ ${item.rating}</span>` : ''}
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </section>
+                `;
+            }).join('');
+        }
+
+        // Get category icon
+        function getCategoryIcon(catId) {
+            const icons = {
+                'live-tv': 'satellite-dish',
+                'movies': 'film',
+                'sports': 'football',
+                'news': 'newspaper',
+                'kids': 'child',
+                'documentaries': 'book'
+            };
+            return icons[catId] || 'tv';
+        }
+
+        // Play video
+        function playVideo(url, title) {
+            const modal = document.getElementById('videoModal');
+            modal.classList.add('active');
+
+            if (player) {
+                player.dispose();
+            }
+
+            player = videojs('player', {
+                controls: true,
+                autoplay: true,
+                preload: 'auto',
+                fluid: true,
+                sources: [{
+                    src: url,
+                    type: 'application/x-mpegURL'
+                }]
+            });
+
+            document.title = `▶️ ${title} - TV Stream PRO`;
+        }
+
+        // Close video
+        function closeVideo() {
+            const modal = document.getElementById('videoModal');
+            modal.classList.remove('active');
+
+            if (player) {
+                player.dispose();
+                player = null;
+            }
+
+            document.title = '📺 TV Stream PRO - Modern';
+        }
+
+        // Setup search
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', (e) => {
+                searchQuery = e.target.value;
+                renderCategories();
+            });
+        }
+
+        // Show error
+        function showError() {
+            const container = document.getElementById('categoriesContainer');
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-exclamation-triangle empty-icon" style="color: var(--accent);"></i>
+                    <h3 class="empty-title">Failed to Load Content</h3>
+                    <p style="color: var(--text-muted);">Please refresh the page to try again</p>
+                </div>
+            `;
+        }
+
+        // Close modal on Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeVideo();
+            }
+        });
+    </script>
+</body>
+
+</html>

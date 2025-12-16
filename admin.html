@@ -1,0 +1,2133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>TV Stream Admin Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #10b981;
+            --secondary: #3b82f6;
+            --accent: #a78bfa;
+            --dark: #0f172a;
+            --light: rgba(255, 255, 255, 0.08);
+            --border: rgba(255, 255, 255, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(180deg, #020617 0%, #0f172a 100%);
+            background-attachment: fixed;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .app-shell {
+            width: 100%;
+            max-width: 1400px;
+            background: rgba(15, 23, 42, 0.95);
+            border-radius: 24px;
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(0, 2fr);
+            overflow: hidden;
+            box-shadow:
+                0 40px 80px rgba(15, 23, 42, 0.9),
+                0 0 0 1px rgba(15, 23, 42, 0.9),
+                0 0 100px rgba(102, 126, 234, 0.2);
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .sidebar {
+            padding: 24px 22px;
+            background: radial-gradient(circle at top left, rgba(102, 126, 234, 0.25), rgba(15, 23, 42, 1));
+            border-right: 1px solid rgba(148, 163, 184, 0.35);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at top, var(--accent), var(--primary));
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.7);
+            overflow: hidden;
+        }
+
+        .brand-icon img.site-logo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .brand-title {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-title span:first-child {
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            font-size: 13px;
+            text-transform: uppercase;
+            color: rgba(226, 232, 240, 0.9);
+        }
+
+        .brand-title span:last-child {
+            font-weight: 600;
+            font-size: 18px;
+            background: linear-gradient(to right, #e5e7eb, #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Site-wide Quick Links */
+        .header-quick-links {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .quick-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.08);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .quick-link:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
+            box-shadow: 0 8px 18px rgba(16, 185, 129, 0.25);
+        }
+
+        .login-card,
+        .form-card {
+            background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.95));
+            border-radius: 18px;
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            padding: 18px 18px 16px;
+            box-shadow: 0 16px 40px rgba(15, 23, 42, 0.75);
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(148, 163, 184, 0.95);
+            margin-bottom: 8px;
+        }
+
+        .section-subtitle {
+            font-size: 12px;
+            color: rgba(148, 163, 184, 0.9);
+            margin-bottom: 14px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        label {
+            font-size: 12px;
+            color: rgba(209, 213, 219, 0.9);
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 8px 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(51, 65, 85, 0.9);
+            background: rgba(15, 23, 42, 0.95);
+            color: #e5e7eb;
+            font-size: 13px;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: rgba(129, 140, 248, 1);
+            box-shadow: 0 0 0 1px rgba(129, 140, 248, 0.6);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+            max-height: 140px;
+        }
+
+        .btn {
+            border-radius: 999px;
+            border: none;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            cursor: pointer;
+            transition: transform 0.08s ease-out, box-shadow 0.12s ease-out, background 0.15s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #f9fafb;
+            box-shadow: 0 10px 32px rgba(79, 70, 229, 0.85);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 18px 40px rgba(79, 70, 229, 0.85);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0) scale(0.98);
+            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.7);
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+            padding-bottom: 8px;
+        }
+
+        .tab-btn {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            color: rgba(148, 163, 184, 0.8);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            background: rgba(148, 163, 184, 0.1);
+            color: rgba(226, 232, 240, 0.9);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .notifications-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 12px;
+        }
+
+        .notification-item {
+            padding: 12px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            gap: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .notification-item:hover {
+            background: rgba(30, 64, 175, 0.2);
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+
+        .notification-info {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 4px;
+            color: rgba(249, 250, 251, 0.95);
+        }
+
+        .notification-message {
+            font-size: 12px;
+            color: rgba(148, 163, 184, 0.9);
+            line-height: 1.4;
+        }
+
+        .notification-meta {
+            font-size: 10px;
+            color: rgba(148, 163, 184, 0.7);
+            margin-top: 4px;
+        }
+
+        .notification-type {
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .notification-type.info {
+            background: rgba(59, 130, 246, 0.2);
+            color: rgba(147, 197, 253, 1);
+        }
+
+        .notification-type.warning {
+            background: rgba(234, 179, 8, 0.2);
+            color: rgba(253, 224, 71, 1);
+        }
+
+        .notification-type.success {
+            background: rgba(34, 197, 94, 0.2);
+            color: rgba(134, 239, 172, 1);
+        }
+
+        .notification-type.error {
+            background: rgba(239, 68, 68, 0.2);
+            color: rgba(254, 202, 202, 1);
+        }
+
+        .btn-outline {
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(148, 163, 184, 0.8);
+            color: rgba(226, 232, 240, 0.95);
+        }
+
+        .btn-outline:hover {
+            background: rgba(30, 64, 175, 0.3);
+        }
+
+        .stats {
+            display: flex;
+            gap: 10px;
+            margin-top: 6px;
+        }
+
+        .stat-pill {
+            flex: 1;
+            border-radius: 999px;
+            padding: 6px 10px;
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(51, 65, 85, 0.9);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: rgba(148, 163, 184, 0.95);
+        }
+
+        .stat-pill strong {
+            color: rgba(226, 232, 240, 0.95);
+            font-weight: 600;
+        }
+
+        .iptv-note {
+            font-size: 12px;
+            color: rgba(148, 163, 184, 0.9);
+            margin-bottom: 10px;
+        }
+
+        .iptv-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+            max-height: 260px;
+            overflow-y: auto;
+        }
+
+        .iptv-card {
+            border-radius: 14px;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            padding: 12px;
+            background: rgba(15, 23, 42, 0.85);
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .iptv-card h4 {
+            margin: 0;
+            font-size: 14px;
+            color: #e2e8f0;
+        }
+
+        .iptv-card small {
+            display: block;
+            font-size: 11px;
+            color: rgba(148, 163, 184, 0.85);
+            margin-top: 4px;
+            word-break: break-all;
+        }
+
+        .iptv-card-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .iptv-empty {
+            padding: 18px;
+            font-size: 12px;
+            color: rgba(148, 163, 184, 0.85);
+            border: 1px dashed rgba(148, 163, 184, 0.4);
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .manual-channel-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .manual-channels-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .manual-channel-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 10px;
+            border-radius: 999px;
+            background: rgba(96, 165, 250, 0.12);
+            color: rgba(191, 219, 254, 1);
+            font-size: 11px;
+        }
+
+        .manual-channel-pill button {
+            border: none;
+            background: transparent;
+            color: inherit;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .main {
+            padding: 22px 20px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .main-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .main-subtitle {
+            font-size: 12px;
+            color: rgba(148, 163, 184, 0.9);
+        }
+
+        .tag {
+            font-size: 11px;
+            padding: 3px 9px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(55, 65, 81, 0.9);
+            color: rgba(209, 213, 219, 0.9);
+        }
+
+        .toolbar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .search-input {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(51, 65, 85, 0.9);
+            background: rgba(15, 23, 42, 0.95);
+            font-size: 12px;
+            color: rgba(209, 213, 219, 0.95);
+        }
+
+        .search-input input {
+            border: none;
+            background: transparent;
+            padding: 0;
+            font-size: 12px;
+            color: inherit;
+        }
+
+        .search-input input:focus {
+            outline: none;
+        }
+
+        .table-wrapper {
+            flex: 1;
+            min-height: 0;
+            background: radial-gradient(circle at top right, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 1));
+            border-radius: 16px;
+            border: 1px solid rgba(55, 65, 81, 0.95);
+            padding: 8px 2px 8px 10px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .table-header {
+            display: grid;
+            grid-template-columns: 1.4fr 1.2fr 0.9fr 0.7fr 0.8fr 0.9fr;
+            padding: 4px 10px 4px 0;
+            font-size: 11px;
+            color: rgba(148, 163, 184, 0.95);
+            border-bottom: 1px solid rgba(55, 65, 81, 0.9);
+        }
+
+        .table-body {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 6px;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1.4fr 1.2fr 0.9fr 0.7fr 0.8fr 0.9fr;
+            align-items: center;
+            padding: 5px 10px 5px 0;
+            font-size: 12px;
+            border-bottom: 1px solid rgba(31, 41, 55, 0.8);
+        }
+
+        .row:nth-child(odd) {
+            background: rgba(15, 23, 42, 0.85);
+        }
+
+        .row:nth-child(even) {
+            background: rgba(15, 23, 42, 0.95);
+        }
+
+        .row:hover {
+            background: linear-gradient(to right, rgba(30, 64, 175, 0.65), rgba(15, 23, 42, 0.98));
+        }
+
+        .row-title {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+
+        .row-title span:first-child {
+            font-weight: 500;
+            color: rgba(249, 250, 251, 0.98);
+        }
+
+        .row-title span:last-child {
+            font-size: 11px;
+            color: rgba(148, 163, 184, 0.95);
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 10px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.98);
+            border: 1px solid rgba(55, 65, 81, 0.95);
+            font-size: 11px;
+        }
+
+        .pill-featured {
+            border-color: rgba(234, 179, 8, 0.9);
+            color: rgba(250, 204, 21, 0.95);
+        }
+
+        .actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .icon-btn {
+            width: 24px;
+            height: 24px;
+            border-radius: 999px;
+            border: 1px solid rgba(55, 65, 81, 0.95);
+            background: rgba(15, 23, 42, 0.98);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: rgba(209, 213, 219, 0.95);
+            cursor: pointer;
+        }
+
+        .icon-btn:hover {
+            border-color: rgba(129, 140, 248, 1);
+            color: rgba(191, 219, 254, 1);
+        }
+
+        .icon-btn.danger:hover {
+            border-color: rgba(239, 68, 68, 0.95);
+            color: rgba(254, 202, 202, 1);
+        }
+
+        .badge-category {
+            font-size: 11px;
+            padding: 3px 9px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.98);
+            border: 1px solid rgba(37, 99, 235, 0.9);
+            color: rgba(191, 219, 254, 0.98);
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 999px;
+            background: #22c55e;
+            box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.28);
+        }
+
+        .status-dot.offline {
+            background: #f97373;
+            box-shadow: 0 0 0 4px rgba(248, 113, 113, 0.26);
+        }
+
+        .status-text {
+            font-size: 11px;
+            color: rgba(148, 163, 184, 0.95);
+        }
+
+        .login-note {
+            font-size: 11px;
+            color: rgba(148, 163, 184, 0.9);
+            margin-top: 4px;
+        }
+
+        .chip-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 4px;
+        }
+
+        .chip {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(55, 65, 81, 0.95);
+            color: rgba(148, 163, 184, 0.95);
+        }
+
+        .error,
+        .success {
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        .error {
+            color: #fecaca;
+        }
+
+        .success {
+            color: #bbf7d0;
+        }
+
+        /* Comprehensive Mobile Responsive Design */
+        @media (max-width: 1200px) {
+            .app-shell {
+                grid-template-columns: minmax(280px, 0.8fr) minmax(0, 2fr);
+            }
+
+            .brand-title span:first-child {
+                font-size: 18px;
+            }
+
+            .brand-title span:last-child {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .app-shell {
+                grid-template-columns: minmax(0, 1fr);
+                border-radius: 16px;
+                margin: 10px;
+            }
+
+            .sidebar {
+                border-right: none;
+                border-bottom: 1px solid rgba(148, 163, 184, 0.35);
+                padding: 20px;
+            }
+
+            .brand {
+                margin-bottom: 20px;
+            }
+
+            .tab-buttons {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .tab-btn {
+                flex: 1;
+                min-width: 100px;
+                padding: 10px 8px;
+                font-size: 13px;
+            }
+
+            .input-group input,
+            .input-group select,
+            .input-group textarea {
+                padding: 12px 14px;
+                font-size: 16px;
+                /* Prevent zoom on iOS */
+            }
+
+            .btn {
+                padding: 14px 20px;
+                font-size: 15px;
+                min-height: 44px;
+                /* Better touch target */
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .app-shell {
+                margin: 0;
+                border-radius: 12px;
+                box-shadow: 0 20px 40px rgba(15, 23, 42, 0.8);
+            }
+
+            .sidebar {
+                padding: 16px;
+            }
+
+            .brand {
+                flex-direction: column;
+                text-align: center;
+                gap: 8px;
+                margin-bottom: 16px;
+            }
+
+            .brand-icon {
+                margin-right: 0;
+                margin-bottom: 8px;
+            }
+
+            .login-card,
+            .form-card {
+                padding: 20px;
+            }
+
+            .section-title {
+                font-size: 20px;
+            }
+
+            .section-subtitle {
+                font-size: 14px;
+            }
+
+            .tab-buttons {
+                margin-bottom: 20px;
+            }
+
+            .tab-btn {
+                padding: 12px 10px;
+                font-size: 12px;
+            }
+
+            .tab-btn i {
+                margin-right: 6px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .tab-buttons {
+                flex-direction: column;
+                gap: 6px;
+            }
+
+            .tab-btn {
+                width: 100%;
+                justify-content: flex-start;
+                padding: 14px 16px;
+                font-size: 14px;
+            }
+
+            .input-group {
+                margin-bottom: 16px;
+            }
+
+            .input-group label {
+                font-size: 13px;
+                margin-bottom: 6px;
+            }
+
+            .form-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .form-actions .btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 5px;
+            }
+
+            .app-shell {
+                border-radius: 8px;
+            }
+
+            .sidebar {
+                padding: 12px;
+            }
+
+            .brand-title span:first-child {
+                font-size: 16px;
+            }
+
+            .brand-title span:last-child {
+                font-size: 11px;
+            }
+
+            .login-card,
+            .form-card {
+                padding: 16px;
+            }
+
+            .section-title {
+                font-size: 18px;
+                margin-bottom: 8px;
+            }
+
+            .section-subtitle {
+                font-size: 13px;
+                margin-bottom: 16px;
+            }
+
+            .input-group input,
+            .input-group select,
+            .input-group textarea {
+                padding: 14px 12px;
+            }
+
+            .btn {
+                padding: 16px 20px;
+                font-size: 14px;
+            }
+
+            .login-note {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .brand-title span:first-child {
+                font-size: 14px;
+            }
+
+            .brand-title span:last-child {
+                font-size: 10px;
+            }
+
+            .tab-btn {
+                padding: 12px 14px;
+                font-size: 13px;
+            }
+
+            .input-group input,
+            .input-group select,
+            .input-group textarea {
+                font-size: 16px;
+                padding: 12px 10px;
+            }
+        }
+
+        /* Touch improvements for mobile */
+        @media (hover: none) and (pointer: coarse) {
+            .btn:hover {
+                transform: none;
+            }
+
+            .btn:active {
+                transform: scale(0.98);
+                transition: transform 0.1s ease;
+            }
+
+            .tab-btn:hover {
+                background: rgba(102, 126, 234, 0.1);
+            }
+
+            .tab-btn:active {
+                transform: scale(0.98);
+                transition: transform 0.1s ease;
+            }
+        }
+
+        /* Improved form elements for mobile */
+        @media (max-width: 768px) {
+
+            .input-group input:focus,
+            .input-group select:focus,
+            .input-group textarea:focus {
+                transform: none;
+                box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.3);
+            }
+
+            /* Prevent zoom on iOS */
+            input[type="text"],
+            input[type="password"],
+            input[type="url"],
+            select,
+            textarea {
+                font-size: 16px !important;
+            }
+        }
+
+        /* Hide-on-scroll helpers for admin header */
+        .hidden-by-scroll {
+            transform: translateY(-120%);
+            opacity: 0 !important;
+            pointer-events: none;
+        }
+
+        /* Make the top header blocks transitionable so they can be fully hidden */
+        .main-search-input,
+        .settings-toggle,
+        .site-title,
+        .main-header-top,
+        .main-header,
+        .toolbar {
+            transition: transform 280ms cubic-bezier(.2, .9, .2, 1), opacity 220ms ease;
+        }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-icon">
+                    <img src="assets/tvstream-logo.png" alt="TV Stream" class="site-logo" />
+                </div>
+                <div class="brand-title">
+                    <span>TV STREAM PRO</span>
+                    <span>Admin Dashboard</span>
+                </div>
+            </div>
+            <div class="header-quick-links">
+                <a class="quick-link" href="./TV-Stream-PRO.html"><i class="fas fa-house"></i><span>Home</span></a>
+                <a class="quick-link" href="./TV-Stream-PRO.html#live-tv"><i
+                        class="fas fa-satellite-dish"></i><span>Live TV</span></a>
+                <a class="quick-link" href="./TV-Stream-PRO.html#movies"><i
+                        class="fas fa-film"></i><span>Movies</span></a>
+                <a class="quick-link" href="./TV-Stream-PRO.html#sports"><i
+                        class="fas fa-football"></i><span>Sports</span></a>
+                <a class="quick-link" href="./football-ai.html"><i class="fas fa-robot"></i><span>AI
+                        Predictions</span></a>
+            </div>
+
+            <div class="login-card" id="loginCard">
+                <div class="section-title">Admin Access</div>
+                <div class="section-subtitle">
+                    Ingia kwa password ili kudhibiti m3u8 links zako kwa usalama.
+                </div>
+                <div class="input-group">
+                    <label for="adminPassword">Admin Password</label>
+                    <input type="password" id="adminPassword" placeholder="Ingiza admin password (default: admin123)">
+                </div>
+                <button class="btn btn-primary" id="loginBtn">
+                    <i class="fas fa-lock-open"></i>
+                    <span>Ingia</span>
+                </button>
+                <div class="login-note">
+                    Unaweza kubadilisha token kwa kuweka env `ADMIN_TOKEN` kwenye server yako.
+                </div>
+                <div class="error" id="loginError" style="display:none;"></div>
+            </div>
+
+            <div class="form-card" id="formCard" style="display:none;">
+                <div class="tab-buttons">
+                    <button class="tab-btn active" data-tab="streams">
+                        <i class="fas fa-tv"></i> Streams
+                    </button>
+                    <button class="tab-btn" data-tab="notifications">
+                        <i class="fas fa-bell"></i> Notifications
+                    </button>
+                    <button class="tab-btn" data-tab="iptv">
+                        <i class="fas fa-layer-group"></i> IPTV Playlists
+                    </button>
+                </div>
+
+                <div class="tab-content active" id="streamsTab">
+                    <div class="section-title" id="formTitle">Ongeza Stream Mpya</div>
+                    <div class="section-subtitle">
+                        Weka m3u8 link yako, chagua category na maelezo mengine, kisha hifadhi.
+                    </div>
+
+                    <div class="input-group">
+                        <label for="streamTitle">Jina la Channel / Movie *</label>
+                        <input type="text" id="streamTitle" placeholder="Mfano: Azam Sports HD">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="streamUrl">M3U8 Stream URL *</label>
+                        <input type="text" id="streamUrl" placeholder="https://example.com/stream.m3u8">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="category">Category *</label>
+                        <select id="category">
+                            <!-- options will be filled dynamically from backend so it matches user app -->
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="thumbnail">Thumbnail (Image URL)</label>
+                        <input type="text" id="thumbnail" placeholder="Hiari: picha ya background (poster)">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="year">Year</label>
+                        <input type="text" id="year" placeholder="Mfano: 2024">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="rating">Rating</label>
+                        <input type="text" id="rating" placeholder="Mfano: 4.8">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="quality">Quality</label>
+                        <input type="text" id="quality" placeholder="Mfano: 1080p, 720p">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="genre">Genre</label>
+                        <input type="text" id="genre" placeholder="Mfano: Sports, Action, Drama">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="description">Maelezo (Description)</label>
+                        <textarea id="description" placeholder="Maelezo mafupi ya channel / movie"></textarea>
+                    </div>
+
+                    <div class="chip-row">
+                        <label
+                            style="display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(209,213,219,0.9);">
+                            <input type="checkbox" id="isFeatured" style="width:auto;">
+                            <span>Onyesha kwenye Hero / Carousel (Featured)</span>
+                        </label>
+                    </div>
+
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;">
+                        <button class="btn btn-outline" id="resetFormBtn">
+                            <i class="fas fa-rotate-left"></i>
+                            <span>Clear</span>
+                        </button>
+                        <button class="btn btn-primary" id="saveStreamBtn">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span>Hifadhi Stream</span>
+                        </button>
+                    </div>
+
+                    <div class="error" id="formError" style="display:none;"></div>
+                    <div class="success" id="formSuccess" style="display:none;"></div>
+                </div>
+
+                <div class="tab-content" id="notificationsTab">
+                    <div class="section-title">Tuma Notification</div>
+                    <div class="section-subtitle">
+                        Tuma ujumbe kwa watumiaji wako. Ujumbe huu utaonekana kwenye app yao.
+                    </div>
+
+                    <div class="input-group">
+                        <label for="notificationTitle">Kichwa cha Ujumbe *</label>
+                        <input type="text" id="notificationTitle" placeholder="Mfano: Matangazo Muhimu">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="notificationMessage">Ujumbe *</label>
+                        <textarea id="notificationMessage" placeholder="Weka ujumbe wako hapa..."></textarea>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="notificationType">Aina ya Notification</label>
+                        <select id="notificationType">
+                            <option value="info">Habari (Info)</option>
+                            <option value="success">Mafanikio (Success)</option>
+                            <option value="warning">Onyo (Warning)</option>
+                            <option value="error">Hitilafu (Error)</option>
+                        </select>
+                    </div>
+
+                    <button class="btn btn-primary" id="sendNotificationBtn" style="width:100%;margin-top:8px;">
+                        <i class="fas fa-paper-plane"></i>
+                        <span>Tuma Notification</span>
+                    </button>
+
+                    <div class="error" id="notificationError" style="display:none;"></div>
+                    <div class="success" id="notificationSuccess" style="display:none;"></div>
+
+                    <div class="section-title" style="margin-top:20px;">Notifications Zilizotumwa</div>
+                    <div class="notifications-list" id="notificationsList">
+                        <!-- notifications will be loaded here -->
+                    </div>
+                </div>
+
+                <div class="tab-content" id="iptvTab">
+                    <div class="section-title" id="iptvFormTitle">Ongeza IPTV Category</div>
+                    <div class="section-subtitle">
+                        Ratibu playlists za IPTV ambazo zitaonekana kwenye player mpya wa playlists ndani ya app ya
+                        watumiaji.
+                    </div>
+
+                    <div class="input-group">
+                        <label for="iptvLabel">Jina la Category *</label>
+                        <input type="text" id="iptvLabel" placeholder="Mfano: Sports Live">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="iptvKey">Unique Key (slug)</label>
+                        <input type="text" id="iptvKey" placeholder="mf: sports-live">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="iptvPlaylistUrl">Playlist URL (M3U / JSON)</label>
+                        <input type="text" id="iptvPlaylistUrl" placeholder="https://example.com/sports.m3u">
+                    </div>
+
+                    <div class="iptv-note">Unaweza pia kuongeza channel moja moja hapa chini kama hauna playlist URL.
+                    </div>
+
+                    <div class="manual-channel-grid">
+                        <input type="text" id="channelTitle" placeholder="Jina la Channel">
+                        <input type="text" id="channelUrl" placeholder="Stream URL (m3u8)">
+                        <input type="text" id="channelLogo" placeholder="Logo URL (hiari)">
+                        <input type="text" id="channelGroup" placeholder="Group/Genre">
+                        <input type="text" id="channelLanguage" placeholder="Lugha">
+                    </div>
+                    <button class="btn btn-outline" type="button" id="addChannelBtn">
+                        <i class="fas fa-plus"></i> Ongeza Channel ya Manual
+                    </button>
+                    <div class="manual-channels-list" id="manualChannelsList"></div>
+
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;">
+                        <button class="btn btn-outline" type="button" id="resetIptvBtn">
+                            <i class="fas fa-undo"></i> Clear
+                        </button>
+                        <button class="btn btn-primary" type="button" id="saveIptvBtn">
+                            <i class="fas fa-save"></i> Hifadhi Category
+                        </button>
+                    </div>
+                    <div class="error" id="iptvFormError" style="display:none;"></div>
+                    <div class="success" id="iptvFormSuccess" style="display:none;"></div>
+
+                    <div class="section-title"
+                        style="margin-top:18px;display:flex;justify-content:space-between;align-items:center;">
+                        <span>Playlists Zilizopo</span>
+                        <button class="btn btn-outline" style="padding:4px 10px;font-size:11px;" type="button"
+                            id="refreshIptvBtn">
+                            <i class="fas fa-sync-alt"></i> Reload
+                        </button>
+                    </div>
+                    <div class="iptv-list" id="iptvCategoryList">
+                        <div class="iptv-empty">Hakuna playlist bado. Ongeza angalau moja kutumia fomu hapo juu.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats">
+                <div class="stat-pill">
+                    <span>Jumla Streams</span>
+                    <strong id="totalCount">0</strong>
+                </div>
+                <div class="stat-pill">
+                    <span>Featured</span>
+                    <strong id="featuredCount">0</strong>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main">
+            <div class="main-header">
+                <div>
+                    <div class="main-title">Streams zako zote</div>
+                    <div class="main-subtitle">
+                        Udhibiti kamili wa links zako za m3u8. Ukibadilisha hapa, app ya TV Stream PRO itapokea data
+                        mpya moja kwa moja.
+                    </div>
+                </div>
+                <div class="tag">
+                    <span class="status-dot" id="statusDot"></span>
+                    <span class="status-text" id="statusText">Offline</span>
+                </div>
+            </div>
+
+            <div class="toolbar">
+                <div class="search-input">
+                    <i class="fas fa-search" style="font-size:11px;color:rgba(148,163,184,0.95);"></i>
+                    <input type="text" id="searchInput" placeholder="Tafuta kwa jina, category, au genre...">
+                </div>
+                <button class="btn btn-outline" id="refreshBtn">
+                    <i class="fas fa-sync-alt"></i>
+                    <span>Reload</span>
+                </button>
+            </div>
+
+            <div class="table-wrapper">
+                <div class="table-header">
+                    <div>Title &amp; URL</div>
+                    <div>Category</div>
+                    <div>Meta</div>
+                    <div>Quality</div>
+                    <div>Featured</div>
+                    <div style="text-align:right;">Actions</div>
+                </div>
+                <div class="table-body" id="tableBody">
+                    <!-- rows injected here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+
+
+        const API_BASE = window.location.origin;
+
+        // Ensure we can actually reach the server before doing anything else
+        console.log('Admin Dashboard initialized. API_BASE:', API_BASE);
+
+        let adminToken = '';
+        let allStreams = [];
+        let editId = null;
+        let categories = [];
+        let iptvAdminCategories = [];
+        let editingIptvKey = null;
+        let manualChannels = [];
+
+        const loginCard = document.getElementById('loginCard');
+        const formCard = document.getElementById('formCard');
+        const loginBtn = document.getElementById('loginBtn');
+        const adminPasswordInput = document.getElementById('adminPassword');
+        const loginError = document.getElementById('loginError');
+
+        const formTitle = document.getElementById('formTitle');
+        const streamTitleInput = document.getElementById('streamTitle');
+        const streamUrlInput = document.getElementById('streamUrl');
+        const categoryInput = document.getElementById('category');
+        const thumbnailInput = document.getElementById('thumbnail');
+        const yearInput = document.getElementById('year');
+        const ratingInput = document.getElementById('rating');
+        const qualityInput = document.getElementById('quality');
+        const genreInput = document.getElementById('genre');
+        const descriptionInput = document.getElementById('description');
+        const isFeaturedInput = document.getElementById('isFeatured');
+        const saveStreamBtn = document.getElementById('saveStreamBtn');
+        const resetFormBtn = document.getElementById('resetFormBtn');
+        const formError = document.getElementById('formError');
+        const formSuccess = document.getElementById('formSuccess');
+
+        const tableBody = document.getElementById('tableBody');
+        const searchInput = document.getElementById('searchInput');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const totalCountEl = document.getElementById('totalCount');
+        const featuredCountEl = document.getElementById('featuredCount');
+        const statusDot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+
+        // Notification elements
+        const notificationTitleInput = document.getElementById('notificationTitle');
+        const notificationMessageInput = document.getElementById('notificationMessage');
+        const notificationTypeInput = document.getElementById('notificationType');
+        const sendNotificationBtn = document.getElementById('sendNotificationBtn');
+        const notificationError = document.getElementById('notificationError');
+        const notificationSuccess = document.getElementById('notificationSuccess');
+        const notificationsList = document.getElementById('notificationsList');
+        const iptvLabelInput = document.getElementById('iptvLabel');
+        const iptvKeyInput = document.getElementById('iptvKey');
+        const iptvPlaylistInput = document.getElementById('iptvPlaylistUrl');
+        const channelTitleInput = document.getElementById('channelTitle');
+        const channelUrlInput = document.getElementById('channelUrl');
+        const channelLogoInput = document.getElementById('channelLogo');
+        const channelGroupInput = document.getElementById('channelGroup');
+        const channelLanguageInput = document.getElementById('channelLanguage');
+        const addChannelBtn = document.getElementById('addChannelBtn');
+        const manualChannelsList = document.getElementById('manualChannelsList');
+        const iptvFormError = document.getElementById('iptvFormError');
+        const iptvFormSuccess = document.getElementById('iptvFormSuccess');
+        const iptvFormTitle = document.getElementById('iptvFormTitle');
+        const saveIptvBtn = document.getElementById('saveIptvBtn');
+        const resetIptvBtn = document.getElementById('resetIptvBtn');
+        const refreshIptvBtn = document.getElementById('refreshIptvBtn');
+        const iptvCategoryList = document.getElementById('iptvCategoryList');
+
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tab = btn.dataset.tab;
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(tab + 'Tab').classList.add('active');
+                if (tab === 'notifications') {
+                    loadNotifications();
+                } else if (tab === 'iptv') {
+                    loadIptvCategories();
+                }
+            });
+        });
+
+        function slugifyInput(value = '') {
+            return value
+                .toString()
+                .trim()
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-+|-+$/g, '') || 'category';
+        }
+
+        // Load categories from backend so admin dropdown matches user app categories
+        function loadCategories() {
+            fetch(API_BASE + '/api/categories')
+                .then(res => res.json())
+                .then(data => {
+                    categories = Array.isArray(data) ? data : [];
+                    if (!categories.length) {
+                        categories = [
+                            { id: 'live-tv', title: 'Live TV Channels' },
+                            { id: 'local-tv', title: 'Local TV' },
+                            { id: 'international-tv', title: 'International TV' },
+                            { id: 'movies', title: 'Movies' },
+                            { id: 'series', title: 'TV Series' },
+                            { id: 'cartoons', title: 'Cartoons & Kids' },
+                            { id: 'sports', title: 'Sports Channels' },
+                            { id: 'news', title: 'News Channels' },
+                            { id: 'documentary', title: 'Documentary' },
+                            { id: 'music', title: 'Music Videos' },
+                            { id: 'gospel', title: 'Gospel & Inspiration' },
+                            { id: 'education', title: 'Education & Learning' },
+                            { id: 'radio', title: 'Radio Stations' }
+                        ];
+                    }
+                    const select = categoryInput;
+                    select.innerHTML = categories
+                        .map(c => `<option value="${c.id}">${c.title}</option>`)
+                        .join('');
+                })
+                .catch(err => {
+                    console.error('Failed to load categories', err);
+                    // fallback defaults
+                    categories = [
+                        { id: 'live-tv', title: 'Live TV Channels' },
+                        { id: 'local-tv', title: 'Local TV' },
+                        { id: 'international-tv', title: 'International TV' },
+                        { id: 'movies', title: 'Movies' },
+                        { id: 'series', title: 'TV Series' },
+                        { id: 'cartoons', title: 'Cartoons & Kids' },
+                        { id: 'sports', title: 'Sports Channels' },
+                        { id: 'news', title: 'News Channels' },
+                        { id: 'documentary', title: 'Documentary' },
+                        { id: 'music', title: 'Music Videos' },
+                        { id: 'gospel', title: 'Gospel & Inspiration' },
+                        { id: 'education', title: 'Education & Learning' },
+                        { id: 'radio', title: 'Radio Stations' }
+                    ];
+                    const select = categoryInput;
+                    select.innerHTML = categories
+                        .map(c => `<option value="${c.id}">${c.title}</option>`)
+                        .join('');
+                });
+        }
+
+        loadCategories();
+
+        function renderManualChannels() {
+            if (!manualChannels.length) {
+                manualChannelsList.innerHTML = '<div class="iptv-note">Hakuna channel za manual kwa sasa.</div>';
+                return;
+            }
+            manualChannelsList.innerHTML = manualChannels
+                .map((channel, index) => `
+                    <div class="manual-channel-pill">
+                        <span>${channel.title || 'Channel'} · ${(channel.language || '').toUpperCase() || 'N/A'}</span>
+                        <button type="button" data-index="${index}" aria-label="Ondoa channel">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `).join('');
+            manualChannelsList.querySelectorAll('button[data-index]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const idx = Number(btn.dataset.index);
+                    manualChannels.splice(idx, 1);
+                    renderManualChannels();
+                });
+            });
+        }
+
+        function resetIptvForm() {
+            editingIptvKey = null;
+            iptvFormTitle.textContent = 'Ongeza IPTV Category';
+            iptvLabelInput.value = '';
+            iptvKeyInput.value = '';
+            iptvPlaylistInput.value = '';
+            channelTitleInput.value = '';
+            channelUrlInput.value = '';
+            channelLogoInput.value = '';
+            channelGroupInput.value = '';
+            channelLanguageInput.value = '';
+            manualChannels = [];
+            iptvFormError.style.display = 'none';
+            iptvFormSuccess.style.display = 'none';
+            renderManualChannels();
+        }
+
+        function loadIptvCategories() {
+            if (!adminToken) return;
+            fetch(API_BASE + '/api/admin/iptv-playlists', {
+                headers: {
+                    'x-admin-token': adminToken
+                }
+            })
+                .then(res => res.json())
+                .then(data => {
+                    iptvAdminCategories = Array.isArray(data) ? data : [];
+                    renderIptvCategoryList();
+                })
+                .catch(err => {
+                    console.error('Failed to load IPTV playlists', err);
+                });
+        }
+
+        function renderIptvCategoryList() {
+            if (!iptvAdminCategories.length) {
+                iptvCategoryList.innerHTML = '<div class="iptv-empty">Hakuna playlist zilizohifadhiwa. Ongeza mpya kupitia fomu hapo juu.</div>';
+                return;
+            }
+            iptvCategoryList.innerHTML = iptvAdminCategories
+                .map(cat => `
+                    <div class="iptv-card">
+                        <div>
+                            <h4>${cat.label || cat.key}</h4>
+                            <small>Key: ${cat.key}</small>
+                            ${cat.playlistUrl ? `<small>${cat.playlistUrl}</small>` : '<small>Manual channels pekee</small>'}
+                            <small>${(cat.channels || []).length} manual channels</small>
+                        </div>
+                        <div class="iptv-card-actions">
+                            <button class="icon-btn" data-action="edit" data-key="${cat.key}" title="Hariri">
+                                <i class="fas fa-pen"></i>
+                            </button>
+                            <button class="icon-btn danger" data-action="delete" data-key="${cat.key}" title="Futa">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+        }
+
+        function populateIptvForm(cat) {
+            if (!cat) return;
+            editingIptvKey = cat.key;
+            iptvFormTitle.textContent = `Hariri IPTV Category (${cat.label || cat.key})`;
+            iptvLabelInput.value = cat.label || '';
+            iptvKeyInput.value = cat.key || '';
+            iptvPlaylistInput.value = cat.playlistUrl || '';
+            manualChannels = Array.isArray(cat.channels) ? JSON.parse(JSON.stringify(cat.channels)) : [];
+            iptvFormError.style.display = 'none';
+            iptvFormSuccess.style.display = 'none';
+            renderManualChannels();
+        }
+
+        function deleteIptvCategory(key) {
+            if (!adminToken || !key) return;
+            if (!confirm('Una uhakika unataka kufuta category hii?')) return;
+            fetch(API_BASE + '/api/admin/iptv-playlists/' + key, {
+                method: 'DELETE',
+                headers: {
+                    'x-admin-token': adminToken
+                }
+            })
+                .then(res => {
+                    if (!res.ok) throw new Error('Delete failed');
+                    return res.json();
+                })
+                .then(() => {
+                    iptvAdminCategories = iptvAdminCategories.filter(cat => cat.key !== key);
+                    renderIptvCategoryList();
+                    setStatus(true, 'IPTV Deleted');
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('Kufuta playlist kimeshindikana.');
+                    setStatus(false, 'Delete Error');
+                });
+        }
+
+        renderManualChannels();
+
+        iptvLabelInput?.addEventListener('input', () => {
+            if (editingIptvKey) return;
+            iptvKeyInput.value = slugifyInput(iptvLabelInput.value);
+        });
+
+        addChannelBtn?.addEventListener('click', () => {
+            const title = channelTitleInput.value.trim();
+            const url = channelUrlInput.value.trim();
+            if (!title || !url) {
+                iptvFormError.style.display = 'block';
+                iptvFormError.textContent = 'Weka jina na URL ya channel kabla ya kuongeza.';
+                iptvFormSuccess.style.display = 'none';
+                return;
+            }
+            manualChannels.push({
+                title,
+                url,
+                logo: channelLogoInput.value.trim(),
+                group: channelGroupInput.value.trim(),
+                language: channelLanguageInput.value.trim()
+            });
+            channelTitleInput.value = '';
+            channelUrlInput.value = '';
+            channelLogoInput.value = '';
+            channelGroupInput.value = '';
+            channelLanguageInput.value = '';
+            iptvFormError.style.display = 'none';
+            renderManualChannels();
+        });
+
+        resetIptvBtn?.addEventListener('click', resetIptvForm);
+        refreshIptvBtn?.addEventListener('click', loadIptvCategories);
+
+        saveIptvBtn?.addEventListener('click', () => {
+            const label = iptvLabelInput.value.trim();
+            const playlistUrl = iptvPlaylistInput.value.trim();
+            let keyValue = iptvKeyInput.value.trim();
+
+            if (!label) {
+                iptvFormError.style.display = 'block';
+                iptvFormError.textContent = 'Jina la category ni lazima.';
+                iptvFormSuccess.style.display = 'none';
+                return;
+            }
+            if (!keyValue) {
+                keyValue = slugifyInput(label);
+            }
+            if (!playlistUrl && !manualChannels.length) {
+                iptvFormError.style.display = 'block';
+                iptvFormError.textContent = 'Weka Playlist URL au angalau channel moja ya manual.';
+                iptvFormSuccess.style.display = 'none';
+                return;
+            }
+
+            const payload = {
+                label,
+                key: editingIptvKey || keyValue,
+                playlistUrl,
+                channels: manualChannels
+            };
+
+            const method = editingIptvKey ? 'PUT' : 'POST';
+            const url = API_BASE + '/api/admin/iptv-playlists' + (editingIptvKey ? `/${editingIptvKey}` : '');
+
+            fetch(url, {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-admin-token': adminToken
+                },
+                body: JSON.stringify(payload)
+            })
+                .then(async res => {
+                    const data = await res.json().catch(() => ({}));
+                    if (!res.ok) {
+                        const message = data.message || 'Imeshindikana kuhifadhi playlist.';
+                        throw new Error(message);
+                    }
+                    return data;
+                })
+                .then(() => {
+                    iptvFormSuccess.style.display = 'block';
+                    iptvFormSuccess.textContent = 'Playlist imehifadhiwa ipasavyo.';
+                    iptvFormError.style.display = 'none';
+                    loadIptvCategories();
+                    resetIptvForm();
+                    setStatus(true, 'IPTV Saved');
+                    setTimeout(() => {
+                        iptvFormSuccess.style.display = 'none';
+                    }, 2500);
+                })
+                .catch(err => {
+                    console.error(err);
+                    iptvFormError.style.display = 'block';
+                    iptvFormError.textContent = err.message || 'Imeshindikana kuhifadhi playlist.';
+                    iptvFormSuccess.style.display = 'none';
+                    setStatus(false, 'Save Error');
+                });
+        });
+
+        iptvCategoryList?.addEventListener('click', (event) => {
+            const btn = event.target.closest('[data-action][data-key]');
+            if (!btn) return;
+            const key = btn.dataset.key;
+            if (btn.dataset.action === 'edit') {
+                const target = iptvAdminCategories.find(cat => cat.key === key);
+                if (target) {
+                    populateIptvForm(target);
+                }
+            } else if (btn.dataset.action === 'delete') {
+                deleteIptvCategory(key);
+            }
+        });
+
+        loginBtn.addEventListener('click', () => {
+            const password = adminPasswordInput.value.trim();
+            if (!password) {
+                loginError.style.display = 'block';
+                loginError.textContent = 'Tafadhali ingiza admin password.';
+                return;
+            }
+            adminToken = password;
+            loginError.style.display = 'none';
+            login();
+        });
+
+        adminPasswordInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                loginBtn.click();
+            }
+        });
+
+        function setStatus(online, message) {
+            if (online) {
+                statusDot.classList.remove('offline');
+                statusText.textContent = message || 'Connected';
+            } else {
+                statusDot.classList.add('offline');
+                statusText.textContent = message || 'Offline';
+            }
+        }
+
+        function login() {
+            console.log('Attempting login to:', API_BASE + '/api/admin/streams');
+            fetch(API_BASE + '/api/admin/streams', {
+                headers: {
+                    'x-admin-token': adminToken
+                }
+            })
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error(`Invalid admin password (Status: ${res.status})`);
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    loginCard.style.display = 'none';
+                    formCard.style.display = 'block';
+                    allStreams = data || [];
+                    renderTable();
+                    updateStats();
+                    setStatus(true, 'Admin Connected');
+                    loadIptvCategories();
+                })
+                .catch(err => {
+                    console.error(err);
+                    loginError.style.display = 'block';
+                    loginError.textContent = 'Login imeshindikana, hakikisha password ni sahihi na server inafanya kazi.';
+                    setStatus(false, 'Auth Failed');
+                });
+        }
+
+        function updateStats() {
+            totalCountEl.textContent = allStreams.length;
+            featuredCountEl.textContent = allStreams.filter(s => s.isFeatured).length;
+        }
+
+        function clearForm() {
+            editId = null;
+            formTitle.textContent = 'Ongeza Stream Mpya';
+            streamTitleInput.value = '';
+            streamUrlInput.value = '';
+            categoryInput.value = (categories[0] && categories[0].id) || 'live-tv';
+            thumbnailInput.value = '';
+            yearInput.value = '';
+            ratingInput.value = '';
+            qualityInput.value = '';
+            genreInput.value = '';
+            descriptionInput.value = '';
+            isFeaturedInput.checked = false;
+            formError.style.display = 'none';
+            formSuccess.style.display = 'none';
+        }
+
+        resetFormBtn.addEventListener('click', clearForm);
+
+        saveStreamBtn.addEventListener('click', () => {
+            const title = streamTitleInput.value.trim();
+            const streamUrl = streamUrlInput.value.trim();
+            const category = categoryInput.value;
+
+            if (!title || !streamUrl || !category) {
+                formError.style.display = 'block';
+                formError.textContent = 'Title, URL na Category ni lazima.';
+                formSuccess.style.display = 'none';
+                return;
+            }
+
+            const payload = {
+                title,
+                streamUrl,
+                category,
+                thumbnail: thumbnailInput.value.trim(),
+                year: yearInput.value.trim(),
+                rating: ratingInput.value.trim(),
+                quality: qualityInput.value.trim(),
+                genre: genreInput.value.trim(),
+                description: descriptionInput.value.trim(),
+                isFeatured: isFeaturedInput.checked
+            };
+
+            const method = editId ? 'PUT' : 'POST';
+            const url = API_BASE + '/api/admin/streams' + (editId ? '/' + editId : '');
+
+            fetch(url, {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-admin-token': adminToken
+                },
+                body: JSON.stringify(payload)
+            })
+                .then(async res => {
+                    const data = await res.json().catch(() => ({}));
+                    if (!res.ok) {
+                        const errorMsg = data.message || `Kosa: ${res.status} ${res.statusText}`;
+                        throw new Error(errorMsg);
+                    }
+                    return data;
+                })
+                .then(item => {
+                    if (editId) {
+                        const idx = allStreams.findIndex(s => s.id === item.id);
+                        if (idx !== -1) {
+                            allStreams[idx] = item;
+                        }
+                    } else {
+                        allStreams.push(item);
+                    }
+                    renderTable();
+                    updateStats();
+                    clearForm();
+                    formSuccess.style.display = 'block';
+                    formSuccess.textContent = 'Stream imehifadhiwa kikamilifu.';
+                    setTimeout(() => {
+                        formSuccess.style.display = 'none';
+                    }, 2000);
+                    setStatus(true, 'Saved');
+                })
+                .catch(err => {
+                    console.error('Save error:', err);
+                    formError.style.display = 'block';
+                    let errorMessage = 'Kuhifadhi kimeshindikana. Jaribu tena.';
+
+                    if (err.message) {
+                        if (err.message.includes('Unauthorized')) {
+                            errorMessage = 'Hakuna ruhusa. Tafadhali ingia tena kwa admin dashboard.';
+                        } else if (err.message.includes('required')) {
+                            errorMessage = 'Tafadhali jaza sehemu zote za lazima (Title, URL, Category).';
+                        } else if (err.message.includes('404')) {
+                            errorMessage = 'Stream haijapatikana. Tafadhali hakikisha ID ni sahihi.';
+                        } else {
+                            errorMessage = err.message;
+                        }
+                    }
+
+                    formError.textContent = errorMessage;
+                    formSuccess.style.display = 'none';
+                    setStatus(false, 'Save Error');
+                });
+        });
+
+        function renderTable() {
+            const query = (searchInput.value || '').toLowerCase();
+            let rows = allStreams;
+
+            if (query) {
+                rows = rows.filter(s =>
+                    (s.title || '').toLowerCase().includes(query) ||
+                    (s.category || '').toLowerCase().includes(query) ||
+                    (s.genre || '').toLowerCase().includes(query)
+                );
+            }
+
+            if (!rows.length) {
+                tableBody.innerHTML = '<div style="padding:20px;font-size:12px;color:rgba(148,163,184,0.95);">Hakuna streams za kuonyesha. Ongeza stream mpya upande wa kushoto.</div>';
+                return;
+            }
+
+            tableBody.innerHTML = rows
+                .map(
+                    s => `
+                <div class="row">
+                    <div class="row-title">
+                        <span>${s.title || ''}</span>
+                        <span>${(s.streamUrl || '').slice(0, 60)}${(s.streamUrl || '').length > 60 ? '…' : ''}</span>
+                    </div>
+                    <div>
+                        <span class="badge-category">${s.category || 'N/A'}</span>
+                    </div>
+                    <div>
+                        <div class="chip-row">
+                            ${s.year ? `<span class="chip"><i class="fas fa-calendar"></i>&nbsp;${s.year}</span>` : ''}
+                            ${s.rating ? `<span class="chip"><i class="fas fa-star"></i>&nbsp;${s.rating}</span>` : ''}
+                            ${s.genre ? `<span class="chip"><i class="fas fa-tags"></i>&nbsp;${s.genre}</span>` : ''}
+                        </div>
+                    </div>
+                    <div>
+                        ${s.quality ? `<span class="chip">${s.quality}</span>` : '<span class="chip">Auto</span>'}
+                    </div>
+                    <div>
+                        ${s.isFeatured
+                            ? `<span class="pill pill-featured"><i class="fas fa-bolt"></i>&nbsp;Hero</span>`
+                            : '<span class="pill">Normal</span>'
+                        }
+                    </div>
+                    <div style="text-align:right;">
+                        <div class="actions">
+                            <button class="icon-btn" onclick="editStream(${s.id})" title="Edit">
+                                <i class="fas fa-pen"></i>
+                            </button>
+                            <button class="icon-btn danger" onclick="deleteStream(${s.id})" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `
+                )
+                .join('');
+        }
+
+        searchInput.addEventListener('input', () => {
+            renderTable();
+        });
+
+        refreshBtn.addEventListener('click', () => {
+            if (!adminToken) return;
+            fetch(API_BASE + '/api/admin/streams', {
+                headers: {
+                    'x-admin-token': adminToken
+                }
+            })
+                .then(res => res.json())
+                .then(data => {
+                    allStreams = data || [];
+                    renderTable();
+                    updateStats();
+                    setStatus(true, 'Reloaded');
+                })
+                .catch(err => {
+                    console.error(err);
+                    setStatus(false, 'Reload Error');
+                });
+        });
+
+        window.editStream = function (id) {
+            const s = allStreams.find(x => x.id === id);
+            if (!s) return;
+            editId = id;
+            formTitle.textContent = 'Hariri Stream (' + id + ')';
+            streamTitleInput.value = s.title || '';
+            streamUrlInput.value = s.streamUrl || '';
+            categoryInput.value = s.category || 'live-tv';
+            thumbnailInput.value = s.thumbnail || '';
+            yearInput.value = s.year || '';
+            ratingInput.value = s.rating || '';
+            qualityInput.value = s.quality || '';
+            genreInput.value = s.genre || '';
+            descriptionInput.value = s.description || '';
+            isFeaturedInput.checked = !!s.isFeatured;
+            formError.style.display = 'none';
+            formSuccess.style.display = 'none';
+        };
+
+        window.deleteStream = function (id) {
+            if (!confirm('Una uhakika unataka kufuta stream hii?')) return;
+            fetch(API_BASE + '/api/admin/streams/' + id, {
+                method: 'DELETE',
+                headers: {
+                    'x-admin-token': adminToken
+                }
+            })
+                .then(res => {
+                    if (!res.ok) throw new Error('Delete failed');
+                    return res.json();
+                })
+                .then(() => {
+                    allStreams = allStreams.filter(s => s.id !== id);
+                    renderTable();
+                    updateStats();
+                    setStatus(true, 'Deleted');
+                })
+                .catch(err => {
+                    console.error(err);
+                    setStatus(false, 'Delete Error');
+                    alert('Kufuta kimeshindikana. Jaribu tena.');
+                });
+        };
+
+        // Notification functions
+        function loadNotifications() {
+            if (!adminToken) return;
+            fetch(API_BASE + '/api/admin/notifications', {
+                headers: {
+                    'x-admin-token': adminToken
+                }
+            })
+                .then(res => res.json())
+                .then(data => {
+                    const notifications = Array.isArray(data) ? data : [];
+                    if (!notifications.length) {
+                        notificationsList.innerHTML = '<div style="padding:20px;text-align:center;font-size:12px;color:rgba(148,163,184,0.8);">Hakuna notifications bado. Tumia fomu hapo juu kutuma.</div>';
+                        return;
+                    }
+                    notificationsList.innerHTML = notifications
+                        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                        .map(n => `
+                            <div class="notification-item">
+                                <div class="notification-info">
+                                    <div class="notification-title">${n.title || ''}</div>
+                                    <div class="notification-message">${n.message || ''}</div>
+                                    <div class="notification-meta">${new Date(n.createdAt).toLocaleString('sw-TZ')} · ${n.read ? 'Imeonekana' : 'Haijaonekana'}</div>
+                                </div>
+                                <div style="display:flex;flex-direction:column;gap:6px;align-items:end;">
+                                    <span class="notification-type ${n.type || 'info'}">${n.type || 'info'}</span>
+                                    <button class="icon-btn danger" onclick="deleteNotification(${n.id})" title="Futa">
+                                        <i class="fas fa-trash" style="font-size:10px;"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('');
+                })
+                .catch(err => {
+                    console.error('Failed to load notifications', err);
+                });
+        }
+
+        sendNotificationBtn.addEventListener('click', () => {
+            const title = notificationTitleInput.value.trim();
+            const message = notificationMessageInput.value.trim();
+            const type = notificationTypeInput.value;
+
+            if (!title || !message) {
+                notificationError.style.display = 'block';
+                notificationError.textContent = 'Kichwa na ujumbe ni lazima.';
+                notificationSuccess.style.display = 'none';
+                return;
+            }
+
+            fetch(API_BASE + '/api/admin/notifications', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-admin-token': adminToken
+                },
+                body: JSON.stringify({ title, message, type })
+            })
+                .then(res => {
+                    if (!res.ok) throw new Error('Request failed');
+                    return res.json();
+                })
+                .then(() => {
+                    notificationTitleInput.value = '';
+                    notificationMessageInput.value = '';
+                    notificationTypeInput.value = 'info';
+                    notificationSuccess.style.display = 'block';
+                    notificationSuccess.textContent = 'Notification imetumwa kikamilifu!';
+                    notificationError.style.display = 'none';
+                    loadNotifications();
+                    setTimeout(() => {
+                        notificationSuccess.style.display = 'none';
+                    }, 3000);
+                })
+                .catch(err => {
+                    console.error(err);
+                    notificationError.style.display = 'block';
+                    notificationError.textContent = 'Kutuma kimeshindikana. Jaribu tena.';
+                    notificationSuccess.style.display = 'none';
+                });
+        });
+
+        window.deleteNotification = function (id) {
+            if (!confirm('Una uhakika unataka kufuta notification hii?')) return;
+            fetch(API_BASE + '/api/admin/notifications/' + id, {
+                method: 'DELETE',
+                headers: {
+                    'x-admin-token': adminToken
+                }
+            })
+                .then(res => {
+                    if (!res.ok) throw new Error('Delete failed');
+                    return res.json();
+                })
+                .then(() => {
+                    loadNotifications();
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('Kufuta kimeshindikana. Jaribu tena.');
+                });
+        };
+
+        setStatus(false, 'Offline');
+
+        // Hide admin header controls when scrolling down; show when scrolling up
+        (function () {
+            const mainSearch = document.querySelector('.main-search-input');
+            const settingsBtn = document.querySelector('.settings-toggle');
+            const siteTitle = document.querySelector('.site-title');
+            const mainHeaderTop = document.querySelector('.main-header-top');
+            const mainHeader = document.querySelector('.main-header');
+            const toolbar = document.querySelector('.toolbar');
+            const targets = [mainSearch, settingsBtn, siteTitle, mainHeaderTop, mainHeader, toolbar].filter(Boolean);
+
+            if (!targets.length) return;
+
+            let lastY = window.scrollY || 0;
+            let ticking = false;
+
+            function update() {
+                const currentY = window.scrollY || 0;
+                const delta = currentY - lastY;
+
+                if (Math.abs(delta) < 8) {
+                    ticking = false;
+                    return;
+                }
+
+                if (currentY > lastY && currentY > 60) {
+                    targets.forEach(el => el.classList.add('hidden-by-scroll'));
+                } else {
+                    targets.forEach(el => el.classList.remove('hidden-by-scroll'));
+                }
+
+                lastY = currentY;
+                ticking = false;
+            }
+
+            window.addEventListener('scroll', () => {
+                if (!ticking) {
+                    window.requestAnimationFrame(update);
+                    ticking = true;
+                }
+            }, { passive: true });
+        })();
+    </script>
+</body>
+
+</html>

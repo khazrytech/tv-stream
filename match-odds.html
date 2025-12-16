@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚽ Live Match Odds - TV Stream PRO</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #00D9FF;
+            --secondary: #7B2FFF;
+            --accent: #FF2E97;
+            --dark: #0A0E27;
+            --darker: #060918;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+            --text: #FFFFFF;
+            --text-muted: rgba(255, 255, 255, 0.6);
+            --gradient: linear-gradient(135deg, #00D9FF 0%, #7B2FFF 50%, #FF2E97 100%);
+            --success: #00FF88;
+            --danger: #FF3366;
+            --warning: #FFB800;
+        }
+
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--darker);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Gradient Background */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(0, 217, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(123, 47, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(255, 46, 151, 0.1) 0%, transparent 50%);
+            animation: gradientShift 15s ease infinite;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes gradientShift {
+
+            0%,
+            100% {
+                opacity: 0.5;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.8;
+                transform: scale(1.1);
+            }
+        }
+
+        /* Fixed Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(10, 14, 39, 0.85);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo i {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2rem;
+        }
+
+        .nav {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .nav-link {
+            padding: 0.625rem 1.25rem;
+            border-radius: 999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--gradient);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .nav-link:hover {
+            color: var(--text);
+            transform: translateY(-2px);
+        }
+
+        .nav-link:hover::before {
+            opacity: 0.15;
+        }
+
+        /* Main Content */
+        .main {
+            position: relative;
+            z-index: 1;
+            padding-top: 5rem;
+            min-height: 100vh;
+            padding-bottom: 3rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 3rem 0 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        .hero-badge i {
+            color: var(--primary);
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 0.6s ease 0.2s both;
+        }
+
+        .hero-subtitle {
+            font-size: 1.125rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            animation: fadeInUp 0.6s ease 0.4s both;
+        }
+
+        /* Filters Section */
+        .filters {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 1.5rem;
+            backdrop-filter: blur(20px);
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .filter-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            color: var(--text);
+            font-size: 0.875rem;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 217, 255, 0.1);
+        }
+
+        .filter-select option {
+            background: var(--dark);
+            color: var(--text);
+        }
+
+        .refresh-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--gradient);
+            border: none;
+            border-radius: 0.75rem;
+            color: var(--text);
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            align-self: flex-end;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 217, 255, 0.4);
+        }
+
+        .refresh-btn i {
+            transition: transform 0.5s;
+        }
+
+        .refresh-btn.loading i {
+            animation: spin 1s linear infinite;
+        }
+
+        /* Odds Grid */
+        .odds-section {
+            margin-bottom: 3rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-title i {
+            color: var(--primary);
+        }
+
+        .matches-count {
+            padding: 0.5rem 1rem;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .odds-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(min(100%, 400px), 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Match Card */
+        .match-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.6s ease calc(0.1s * var(--index, 0)) both;
+        }
+
+        .match-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--gradient);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .match-card>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        .match-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(0, 217, 255, 0.5);
+            box-shadow: 0 20px 40px rgba(0, 217, 255, 0.2), 0 0 80px rgba(123, 47, 255, 0.1);
+        }
+
+        .match-card:hover::before {
+            opacity: 0.05;
+        }
+
+        .match-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .sport-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.375rem 0.75rem;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .sport-badge i {
+            color: var(--primary);
+        }
+
+        .match-time {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+
+        .teams {
+            margin-bottom: 1.25rem;
+        }
+
+        .team {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .team:last-child {
+            border-bottom: none;
+        }
+
+        .team-name {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .odds-row {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .odd-chip {
+            flex: 1;
+            min-width: 70px;
+            padding: 0.5rem;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .odd-chip:hover {
+            border-color: var(--primary);
+            background: rgba(0, 217, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .odd-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .odd-value {
+            font-size: 1.125rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .bookmaker-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 1rem;
+            margin-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .bookmaker-name {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+
+        .bookmaker-name i {
+            color: var(--primary);
+        }
+
+        /* Loading State */
+        .loading-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .spinner {
+            width: 3rem;
+            height: 3rem;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        .loading-text {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .empty-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-subtitle {
+            color: var(--text-muted);
+        }
+
+        /* Error State */
+        .error-state {
+            background: rgba(255, 51, 102, 0.1);
+            border: 1px solid rgba(255, 51, 102, 0.3);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .error-icon {
+            font-size: 2.5rem;
+            color: var(--danger);
+            margin-bottom: 1rem;
+        }
+
+        .error-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .error-message {
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .retry-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--danger);
+            border: none;
+            border-radius: 0.75rem;
+            color: var(--text);
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .retry-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 51, 102, 0.4);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-container {
+                padding: 0 1rem;
+            }
+
+            .nav {
+                display: none;
+            }
+
+            .hero {
+                padding: 2rem 0 1.5rem;
+            }
+
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .filters {
+                flex-direction: column;
+            }
+
+            .filter-group {
+                min-width: 100%;
+            }
+
+            .refresh-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .odds-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            .match-card {
+                padding: 1.25rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <span>Match Odds</span>
+            </div>
+            <nav class="nav">
+                <a href="./TV-Stream-PRO.html" class="nav-link">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <a href="./football-ai.html" class="nav-link">
+                    <i class="fas fa-brain"></i> AI Predictions
+                </a>
+                <a href="./TV-Stream-PRO.html#sports" class="nav-link">
+                    <i class="fas fa-football"></i> Sports
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main -->
+    <main class="main">
+        <div class="container">
+            <!-- Hero -->
+            <section class="hero">
+                <div class="hero-badge">
+                    <i class="fas fa-fire"></i>
+                    <span>Live Betting Odds</span>
+                </div>
+                <h1 class="hero-title">Match Odds<br>Live Updates</h1>
+                <p class="hero-subtitle">Real-time betting odds from top bookmakers across multiple sports</p>
+            </section>
+
+            <!-- Filters -->
+            <div class="filters">
+                <div class="filter-group">
+                    <label class="filter-label">Sport</label>
+                    <select class="filter-select" id="sportSelect">
+                        <option value="soccer_epl">⚽ English Premier League</option>
+                        <option value="soccer_spain_la_liga">⚽ La Liga</option>
+                        <option value="soccer_germany_bundesliga">⚽ Bundesliga</option>
+                        <option value="soccer_italy_serie_a">⚽ Serie A</option>
+                        <option value="soccer_france_ligue_one">⚽ Ligue 1</option>
+                        <option value="soccer_uefa_champs_league">⚽ Champions League</option>
+                        <option value="basketball_nba">🏀 NBA</option>
+                        <option value="americanfootball_nfl">🏈 NFL</option>
+                        <option value="icehockey_nhl">🏒 NHL</option>
+                        <option value="tennis_atp_singles">🎾 ATP Tennis</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Market</label>
+                    <select class="filter-select" id="marketSelect">
+                        <option value="h2h">Head to Head (Winner)</option>
+                        <option value="spreads">Spreads (Handicap)</option>
+                        <option value="totals">Totals (Over/Under)</option>
+                    </select>
+                </div>
+                <button class="refresh-btn" id="refreshBtn" onclick="loadOdds()">
+                    <i class="fas fa-sync-alt"></i>
+                    Refresh
+                </button>
+            </div>
+
+            <!-- Error State -->
+            <div class="error-state" id="errorState" style="display: none;">
+                <div class="error-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h3 class="error-title">Failed to Load Odds</h3>
+                <p class="error-message" id="errorMessage">Unable to fetch odds data. Please try again.</p>
+                <button class="retry-btn" onclick="loadOdds()">
+                    <i class="fas fa-redo"></i> Retry
+                </button>
+            </div>
+
+            <!-- Odds Section -->
+            <section class="odds-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-trophy"></i>
+                        Live Matches
+                    </h2>
+                    <div class="matches-count" id="matchesCount">0 Matches</div>
+                </div>
+
+                <!-- Loading State -->
+                <div class="loading-state" id="loadingState">
+                    <div class="spinner"></div>
+                    <p class="loading-text">Fetching latest odds...</p>
+                </div>
+
+                <!-- Odds Grid -->
+                <div class="odds-grid" id="oddsGrid" style="display: none;"></div>
+
+                <!-- Empty State -->
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <i class="fas fa-calendar-xmark empty-icon"></i>
+                    <h3 class="empty-title">No Matches Available</h3>
+                    <p class="empty-subtitle">Try selecting a different sport or check back later</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadOdds();
+
+            // Add event listeners for filters
+            document.getElementById('sportSelect').addEventListener('change', loadOdds);
+            document.getElementById('marketSelect').addEventListener('change', loadOdds);
+        });
+
+        // Load odds data
+        async function loadOdds() {
+            const loadingState = document.getElementById('loadingState');
+            const oddsGrid = document.getElementById('oddsGrid');
+            const emptyState = document.getElementById('emptyState');
+            const errorState = document.getElementById('errorState');
+            const matchesCount = document.getElementById('matchesCount');
+            const refreshBtn = document.getElementById('refreshBtn');
+
+            const sport = document.getElementById('sportSelect').value;
+            const market = document.getElementById('marketSelect').value;
+
+            // Show loading
+            loadingState.style.display = 'block';
+            oddsGrid.style.display = 'none';
+            emptyState.style.display = 'none';
+            errorState.style.display = 'none';
+            refreshBtn.classList.add('loading');
+
+            try {
+                const response = await fetch(`/api/odds?sport=${sport}&markets=${market}&regions=uk,us,eu`);
+                const data = await response.json();
+
+                refreshBtn.classList.remove('loading');
+                loadingState.style.display = 'none';
+
+                if (data.success && data.odds && data.odds.length > 0) {
+                    renderOdds(data.odds, market);
+                    oddsGrid.style.display = 'grid';
+                    matchesCount.textContent = `${data.odds.length} Matches`;
+                } else {
+                    emptyState.style.display = 'block';
+                    matchesCount.textContent = '0 Matches';
+                }
+            } catch (error) {
+                console.error('Error loading odds:', error);
+                refreshBtn.classList.remove('loading');
+                loadingState.style.display = 'none';
+                errorState.style.display = 'block';
+                document.getElementById('errorMessage').textContent = error.message || 'Unable to fetch odds data. Please try again.';
+            }
+        }
+
+        // Render odds cards
+        function renderOdds(oddsData, market) {
+            const oddsGrid = document.getElementById('oddsGrid');
+            oddsGrid.innerHTML = '';
+
+            oddsData.forEach((match, index) => {
+                const card = createMatchCard(match, market, index);
+                oddsGrid.appendChild(card);
+            });
+        }
+
+        // Create match card
+        function createMatchCard(match, market, index) {
+            const card = document.createElement('div');
+            card.className = 'match-card';
+            card.style.setProperty('--index', index);
+
+            const sportEmoji = getSportEmoji(match.sport_key);
+            const matchDate = new Date(match.commence_time);
+            const timeString = matchDate.toLocaleString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            // Get first bookmaker for display
+            const bookmaker = match.bookmakers && match.bookmakers[0];
+            const marketData = bookmaker?.markets?.find(m => m.key === market);
+
+            let oddsHtml = '<p style="color: var(--text-muted); font-size: 0.875rem;">No odds available</p>';
+
+            if (marketData && marketData.outcomes) {
+                if (market === 'h2h') {
+                    // Head to Head - show odds for each team
+                    const homeTeam = match.home_team;
+                    const awayTeam = match.away_team;
+                    const homeOdds = marketData.outcomes.find(o => o.name === homeTeam);
+                    const awayOdds = marketData.outcomes.find(o => o.name === awayTeam);
+                    const drawOdds = marketData.outcomes.find(o => o.name === 'Draw');
+
+                    oddsHtml = `
+                        <div class="teams">
+                            <div class="team">
+                                <div class="team-name">${homeTeam}</div>
+                                <div class="odds-row">
+                                    <div class="odd-chip">
+                                        <div class="odd-label">Win</div>
+                                        <div class="odd-value">${homeOdds ? homeOdds.price.toFixed(2) : '-'}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            ${drawOdds ? `
+                            <div class="team">
+                                <div class="team-name">Draw</div>
+                                <div class="odds-row">
+                                    <div class="odd-chip">
+                                        <div class="odd-label">Draw</div>
+                                        <div class="odd-value">${drawOdds.price.toFixed(2)}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            ` : ''}
+                            <div class="team">
+                                <div class="team-name">${awayTeam}</div>
+                                <div class="odds-row">
+                                    <div class="odd-chip">
+                                        <div class="odd-label">Win</div>
+                                        <div class="odd-value">${awayOdds ? awayOdds.price.toFixed(2) : '-'}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    // Spreads or Totals
+                    oddsHtml = `
+                        <div class="teams">
+                            ${marketData.outcomes.map(outcome => `
+                                <div class="team">
+                                    <div class="team-name">${outcome.name}</div>
+                                    <div class="odds-row">
+                                        <div class="odd-chip">
+                                            <div class="odd-label">${outcome.point !== undefined ? outcome.point : 'Point'}</div>
+                                            <div class="odd-value">${outcome.price.toFixed(2)}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+            }
+
+            card.innerHTML = `
+                <div class="match-header">
+                    <div class="sport-badge">
+                        <i class="fas ${sportEmoji}"></i>
+                        <span>${getSportName(match.sport_key)}</span>
+                    </div>
+                    <div class="match-time">
+                        <i class="far fa-clock"></i>
+                        ${timeString}
+                    </div>
+                </div>
+                ${oddsHtml}
+                <div class="bookmaker-info">
+                    <div class="bookmaker-name">
+                        <i class="fas fa-building"></i>
+                        ${bookmaker ? bookmaker.title : 'Various Bookmakers'}
+                    </div>
+                    <div class="bookmaker-name">
+                        <i class="fas fa-users"></i>
+                        ${match.bookmakers ? match.bookmakers.length : 0} bookmakers
+                    </div>
+                </div>
+            `;
+
+            return card;
+        }
+
+        // Helper functions
+        function getSportEmoji(sportKey) {
+            if (sportKey.includes('soccer')) return 'fa-futbol';
+            if (sportKey.includes('basketball')) return 'fa-basketball';
+            if (sportKey.includes('football')) return 'fa-football';
+            if (sportKey.includes('hockey')) return 'fa-hockey-puck';
+            if (sportKey.includes('tennis')) return 'fa-table-tennis';
+            return 'fa-trophy';
+        }
+
+        function getSportName(sportKey) {
+            const names = {
+                'soccer_epl': 'EPL',
+                'soccer_spain_la_liga': 'La Liga',
+                'soccer_germany_bundesliga': 'Bundesliga',
+                'soccer_italy_serie_a': 'Serie A',
+                'soccer_france_ligue_one': 'Ligue 1',
+                'soccer_uefa_champs_league': 'UCL',
+                'basketball_nba': 'NBA',
+                'americanfootball_nfl': 'NFL',
+                'icehockey_nhl': 'NHL',
+                'tennis_atp_singles': 'ATP'
+            };
+            return names[sportKey] || sportKey.replace(/_/g, ' ');
+        }
+    </script>
+</body>
+
+</html>

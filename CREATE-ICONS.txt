@@ -1,0 +1,72 @@
+═══════════════════════════════════════════════════════════════
+    JINSI YA KUTENGENEZA ICONS ZA APP
+═══════════════════════════════════════════════════════════════
+
+📱 ICONS ZINAZOHITAJIKA:
+
+1. icon-192.png (192x192 pixels)
+2. icon-512.png (512x512 pixels)
+
+═══════════════════════════════════════════════════════════════
+
+🎨 NJIA ZA KUTENGENEZA ICONS:
+
+1️⃣ ONLINE TOOLS (Rahisi Zaidi):
+   ─────────────────────────────
+   
+   A) PWA Asset Generator
+      • Nenda: https://www.pwabuilder.com/imageGenerator
+      • Upload picha yako
+      • Download icons
+   
+   B) RealFaviconGenerator
+      • Nenda: https://realfavicongenerator.net/
+      • Upload picha
+      • Generate icons
+   
+   C) Favicon.io
+      • Nenda: https://favicon.io/
+      • Create au upload
+      • Download
+
+2️⃣ KUTUMIA PHOTOSHOP/GIMP:
+   ────────────────────────
+   • Fungua picha yako
+   • Resize kwa 192x192 na 512x512
+   • Save kama PNG
+   • Weka kwenye folda ya TV-Stream
+
+3️⃣ KUTUMIA ONLINE CONVERTERS:
+   ───────────────────────────
+   • Nenda: https://www.iloveimg.com/resize-image
+   • Upload picha
+   • Set size: 192x192 na 512x512
+   • Download
+
+4️⃣ KUTUMIA SIMPLE TEXT/EMOJI:
+   ───────────────────────────
+   • Fungua Paint au editor
+   • Unda square (192x192)
+   • Andika "📺" au text "TV"
+   • Save kama PNG
+   • Repeat kwa 512x512
+
+═══════════════════════════════════════════════════════════════
+
+💡 QUICK SOLUTION:
+
+Kama huna icons, app bado itafanya kazi!
+Icons ni optional, lakini zinaongeza ujazo wa app.
+
+Kwa sasa, unaweza kuskip icons na app itafanya kazi.
+
+═══════════════════════════════════════════════════════════════
+
+✅ BAADA YA KUTENGENEZA ICONS:
+
+1. Weka icon-192.png kwenye folda ya TV-Stream
+2. Weka icon-512.png kwenye folda ya TV-Stream
+3. Icons zitaonekana kwenye app!
+
+═══════════════════════════════════════════════════════════════
+

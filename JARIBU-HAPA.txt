@@ -1,0 +1,43 @@
+═══════════════════════════════════════════════════════
+    TV STREAM - PROGRAMU YA KUTAZAMA VIDEO
+═══════════════════════════════════════════════════════
+
+JINSI YA KUFUNGUA PROGRAMU:
+
+1. FUNGUA FAILI: index-standalone.html
+   - Piga double-click kwenye faili "index-standalone.html"
+   - Au bofya right-click > Open with > Chrome
+
+2. PROGRAMU ITAFUNGUKA KOTOMATIKI Kwenye Browser
+
+═══════════════════════════════════════════════════════
+
+KATEGORIA ZILIZOPO:
+   📺 Live TV
+   🎬 Movies  
+   📺 Series
+   🎵 Music
+
+═══════════════════════════════════════════════════════
+
+JINSI YA KUTUMIA:
+   - Bofya kwenye kategoria buttons (Live TV, Movies, etc)
+   - Bofya kwenye picha za movies/series ili kuangalia video
+   - Bofya "×" ili kufunga video player
+
+═══════════════════════════════════════════════════════
+
+KUBADILISHA VIDEO STREAMS:
+   - Fungua faili "index-standalone.html" kwenye text editor
+   - Tafuta "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
+   - Badilisha na URLs za m3u8 zako halisi
+   - Hifadhi na ufungue tena
+
+═══════════════════════════════════════════════════════
+
+KWA MAENDELEO ZAIDI (React Version):
+   - Nenda kwenye folda "src"
+   - Fuata maagizo kwenye "INSTALLATION.md"
+
+═══════════════════════════════════════════════════════
+
