@@ -1,4 +1,58 @@
 {
-  "categories": []
+  "categories": [
+    {
+      "label": "Lifestyle",
+      "key": "lifestyle",
+      "playlistUrl": "https://iptv-org.github.io/iptv/categories/lifestyle.m3u",
+      "channels": []
+    },
+    {
+      "label": "Movies",
+      "key": "movies",
+      "playlistUrl": "https://iptv-org.github.io/iptv/categories/movies.m3u",
+      "channels": []
+    },
+    {
+      "label": "Music",
+      "key": "music",
+      "playlistUrl": "https://iptv-org.github.io/iptv/categories/music.m3u",
+      "channels": []
+    },
+    {
+      "label": "News",
+      "key": "news",
+      "playlistUrl": "https://iptv-org.github.io/iptv/categories/news.m3u",
+      "channels": []
+    },
+    {
+      "label": "Outdoor",
+      "key": "outdoor",
+      "playlistUrl": "https://iptv-org.github.io/iptv/categories/outdoor.m3u",
+      "channels": []
+    },
+    {
+      "label": "Relax",
+      "key": "relax",
+      "playlistUrl": "https://iptv-org.github.io/iptv/categories/relax.m3u",
+      "channels": []
+    },
+    {
+      "label": "Religious",
+      "key": "religious",
+      "playlistUrl": "https://iptv-org.github.io/iptv/categories/religious.m3u",
+      "channels": []
+    },
+    {
+      "label": "Series",
+      "key": "series",
+      "playlistUrl": "https://iptv-org.github.io/iptv/categories/series.m3u",
+      "channels": []
+    },
+    {
+      "label": "Science",
+      "key": "science",
+      "playlistUrl": "https://iptv-org.github.io/iptv/categories/science.m3u",
+      "channels": []
+    }
+  ]
 }
-

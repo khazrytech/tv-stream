@@ -561,6 +561,7 @@ app.post("/api/admin/streams", requireAdmin, (req, res) => {
       quality,
       genre,
       isFeatured,
+      slideVideo,
     } = req.body || {};
 
     if (!title || !streamUrl || !category) {
@@ -585,6 +586,7 @@ app.post("/api/admin/streams", requireAdmin, (req, res) => {
       quality: quality || "Auto",
       genre: genre || "",
       isFeatured: !!isFeatured,
+      slideVideo: slideVideo || "",
     };
 
     streams.push(newStream);
@@ -622,6 +624,7 @@ app.put("/api/admin/streams/:id", requireAdmin, (req, res) => {
       quality,
       genre,
       isFeatured,
+      slideVideo,
     } = req.body || {};
 
     const updated = {
@@ -636,6 +639,7 @@ app.put("/api/admin/streams/:id", requireAdmin, (req, res) => {
       ...(quality !== undefined ? { quality } : {}),
       ...(genre !== undefined ? { genre } : {}),
       ...(isFeatured !== undefined ? { isFeatured: !!isFeatured } : {}),
+      ...(slideVideo !== undefined ? { slideVideo } : {}),
     };
 
     streams[index] = updated;
