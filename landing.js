@@ -59,7 +59,7 @@ const EMBEDDED_STREAMS = [
 ];
 
 // Initialization
-const API_BASE = 'http://localhost:8080';
+const API_BASE = ''; // Empty for relative paths in production
 
 document.addEventListener('DOMContentLoaded', () => {
     loadStreams();

@@ -194,9 +194,9 @@ app.get("/health", (req, res) => {
   }
 });
 
-// Root endpoint redirect
+// Root endpoint serves landing.html (the updated UI)
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
+  res.sendFile(path.join(__dirname, "landing.html"));
 });
 
 function readStreams() {
