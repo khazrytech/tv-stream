@@ -10,6 +10,9 @@ const PORT = process.env.PORT || 8080;
 const DATA_FILE = path.join(__dirname, "streams.json");
 const NOTIFICATIONS_FILE = path.join(__dirname, "notifications.json");
 const IPTV_PLAYLISTS_FILE = path.join(__dirname, "iptv-playlists.json");
+const SCROLLING_TEXT_FILE = path.join(__dirname, "scrolling_text.json");
+const SITE_SETTINGS_FILE = path.join(__dirname, "site_settings.json");
+
 const DEFAULT_IPTV_PLAYLISTS = [
   {
     key: "lifestyle",
@@ -115,7 +118,7 @@ const CATEGORY_CONFIG = [
 
 const allowedOrigins = (
   process.env.ALLOWED_ORIGINS ||
-  "http://localhost:8080,http://localhost:5173,http://127.0.0.1:8080,https://zoological-stillness-production.up.railway.app,http://127.0.0.1:5500,http://localhost:5500,https://www.tvstream.run.place,.onrender.com"
+  "http://localhost:8080,http://localhost:5173,http://127.0.0.1:8080,https://zoological-stillness-production.up.railway.app,http://127.0.0.1:5500,http://localhost:5500,https://www.tvstream.run.place,.onrender.com,http://localhost:3000"
 )
   .split(",")
   .map((origin) => origin.trim())
@@ -260,6 +263,77 @@ function writeIptvPlaylists(data) {
     JSON.stringify(payload, null, 2),
     "utf8",
   );
+}
+
+function readScrollingText() {
+  try {
+    const raw = fs.readFileSync(SCROLLING_TEXT_FILE, "utf8");
+    return JSON.parse(raw);
+  } catch (err) {
+    return { messages: [] };
+  }
+}
+
+function writeScrollingText(data) {
+  fs.writeFileSync(SCROLLING_TEXT_FILE, JSON.stringify(data, null, 2), "utf8");
+}
+
+function readSiteSettings() {
+  try {
+    const raw = fs.readFileSync(SITE_SETTINGS_FILE, "utf8");
+    return JSON.parse(raw);
+  } catch (err) {
+    return {
+      about: {
+        title: "About Us",
+        content: "Welcome to TV Stream. The best place to watch live TV, movies, and series."
+      },
+      social: {
+        youtube: { enabled: true, url: "https://youtube.com/@hackertrick", username: "hackertrick" },
+        facebook: { enabled: true, url: "https://facebook.com/khazry.makoi", username: "khazry makoi" },
+        instagram: { enabled: true, url: "https://instagram.com/makoi_tz", username: "makoi tz" }
+      }
+    };
+  }
+}
+
+function writeSiteSettings(data) {
+  fs.writeFileSync(SITE_SETTINGS_FILE, JSON.stringify(data, null, 2), "utf8");
+}
+
+async function parseM3U(url) {
+  try {
+    const response = await axios.get(url);
+    const text = response.data;
+    const lines = text.split(/\r?\n/);
+    const channels = [];
+    let current = null;
+
+    lines.forEach(line => {
+      line = line.trim();
+      if (!line) return;
+      if (line.startsWith('#EXTINF')) {
+        const name = line.split(',').pop().trim();
+        const logoMatch = line.match(/tvg-logo="([^"]*)"/i);
+        const groupMatch = line.match(/group-title="([^"]*)"/i);
+        current = {
+          title: name,
+          logo: logoMatch ? logoMatch[1] : '',
+          group: groupMatch ? groupMatch[1] : '',
+        };
+      } else if (!line.startsWith('#') && current) {
+        channels.push({
+          ...current,
+          url: line
+        });
+        current = null;
+      }
+    });
+    return channels;
+  } catch (error) {
+    console.error("Error parsing M3U:", error.message);
+    return [];
+  }
 }
 
 function slugify(value = "") {
@@ -623,7 +697,7 @@ app.get("/api/admin/notifications", requireAdmin, (req, res) => {
 
 app.post("/api/admin/notifications", requireAdmin, (req, res) => {
   const { notifications } = readNotifications();
-  const { title, message, type = "info", priority = "normal" } = req.body || {};
+  const { title, message, type = "info", priority = "normal", link = "" } = req.body || {};
 
   if (!title || !message) {
     return res.status(400).json({ message: "title and message are required" });
@@ -636,6 +710,7 @@ app.post("/api/admin/notifications", requireAdmin, (req, res) => {
     message,
     type,
     priority,
+    link,
     read: false,
     createdAt: new Date().toISOString(),
   };
@@ -670,6 +745,123 @@ app.post("/api/notifications/:id/read", (req, res) => {
     writeNotifications({ notifications });
   }
   res.json({ success: true });
+});
+
+// --- NEW FEATURES ---
+
+// 1. Scrolling Text API
+app.get("/api/scrolling-text", (req, res) => {
+  const { messages } = readScrollingText();
+  // Filter only active messages
+  const active = messages.filter(m => m.active !== false);
+  res.json(active);
+});
+
+app.get("/api/admin/scrolling-text", requireAdmin, (req, res) => {
+  const { messages } = readScrollingText();
+  res.json(messages);
+});
+
+app.post("/api/admin/scrolling-text", requireAdmin, (req, res) => {
+  const { messages } = readScrollingText();
+  const { text, active = true } = req.body;
+  if (!text) return res.status(400).json({ message: "Text is required" });
+
+  const maxId = messages.reduce((max, m) => (m.id > max ? m.id : max), 0);
+  const newMessage = { id: maxId + 1, text, active, createdAt: new Date() };
+  messages.push(newMessage);
+  writeScrollingText({ messages });
+  res.status(201).json(newMessage);
+});
+
+app.delete("/api/admin/scrolling-text/:id", requireAdmin, (req, res) => {
+  const { messages } = readScrollingText();
+  const id = parseInt(req.params.id, 10);
+  const index = messages.findIndex(m => m.id === id);
+  if (index === -1) return res.status(404).json({ message: "Not found" });
+  messages.splice(index, 1);
+  writeScrollingText({ messages });
+  res.json({ success: true });
+});
+
+app.put("/api/admin/scrolling-text/:id", requireAdmin, (req, res) => {
+  const { messages } = readScrollingText();
+  const id = parseInt(req.params.id, 10);
+  const index = messages.findIndex(m => m.id === id);
+  if (index === -1) return res.status(404).json({ message: "Not found" });
+
+  const { text, active } = req.body;
+  if (text !== undefined) messages[index].text = text;
+  if (active !== undefined) messages[index].active = active;
+
+  writeScrollingText({ messages });
+  res.json(messages[index]);
+});
+
+
+// 2. Site Settings API (About, Socials)
+app.get("/api/settings", (req, res) => {
+  res.json(readSiteSettings());
+});
+
+app.post("/api/admin/settings", requireAdmin, (req, res) => {
+  const current = readSiteSettings();
+  const { about, social } = req.body;
+  const newSettings = {
+    about: about || current.about,
+    social: social || current.social
+  };
+  writeSiteSettings(newSettings);
+  res.json(newSettings);
+});
+
+
+// 3. IPTV Proxy (Server-side parsing)
+// Cache for parsed playlists in memory to avoid fetching every time
+const playlistCache = {};
+
+app.get("/api/iptv/proxy/:key", async (req, res) => {
+  const { key } = req.params;
+  const { categories } = readIptvPlaylists();
+  const category = categories.find(c => c.key === key);
+
+  if (!category) return res.status(404).json({ error: "Category not found" });
+
+  // If manual channels exist, prioritize them or combine them
+  const manualChannels = category.channels || [];
+
+  // If there is a playlist URL, fetch and parse it
+  let remoteChannels = [];
+
+  // Check cache (TTL 1 hour)
+  const now = Date.now();
+  if (category.playlistUrl) {
+    if (playlistCache[key] && (now - playlistCache[key].timestamp < 3600000)) {
+      remoteChannels = playlistCache[key].data;
+    } else {
+      remoteChannels = await parseM3U(category.playlistUrl);
+      playlistCache[key] = {
+        timestamp: now,
+        data: remoteChannels
+      };
+    }
+  }
+
+  // Combine manual and remote channels. Manual first.
+  // Assign IDs for the frontend to play
+  const allChannels = [...manualChannels, ...remoteChannels].map((ch, idx) => ({
+    ...ch,
+    id: `${key}-${idx}`,
+    // fallback logo
+    logo: ch.logo || ch.icon || "https://via.placeholder.com/50x50/333/fff?text=TV"
+  }));
+
+  res.json({
+    key: category.key,
+    label: category.label,
+    count: allChannels.length,
+    channels: allChannels
+  });
 });
 
 // Live Score API - Modern implementation with caching

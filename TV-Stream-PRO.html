@@ -3969,6 +3969,17 @@
             }
         }
 
+        function enhanceFeaturedStreams(streams) {
+            if (!Array.isArray(streams)) return [];
+            // Filter streams where isFeatured is true
+            const featured = streams.filter(s => s.isFeatured === true);
+            // If no featured streams, fallback to first 5 or all
+            if (featured.length === 0) {
+                return streams.slice(0, 5);
+            }
+            return featured;
+        }
+
         // Sports IPTV Playlist
         async function loadIptvCategoriesFromAdmin() {
             try {
@@ -5584,9 +5595,10 @@
                 )
                 .map(
                     (n) => `
-                    <div class="notification-item-user ${n.read ? "" : "unread"}" onclick="markNotificationRead(${n.id})">
-                        <div class="notification-title-user">${n.title || ""}</div>
-                        <div class="notification-message-user">${n.message || ""}</div>
+                    <div class="notification-item-user ${n.read ? "" : "unread"}" onclick="handleNotificationClick(this, ${n.id}, '${n.link || ''}')">
+                        <div class="notification-title-user">${escapeHtml(n.title || "")}</div>
+                        <div class="notification-message-user">${escapeHtml(n.message || "")}</div>
+                        ${n.link ? `<div class="notification-link-preview"><i class="fas fa-external-link-alt"></i> Fungua</div>` : ""}
                         <div class="notification-meta-user">
                             <span class="notification-type-badge ${n.type || "info"}">${n.type || "info"}</span>
                             <span>${new Date(n.createdAt).toLocaleString("sw-TZ")}</span>
@@ -5624,6 +5636,38 @@
                 }
             } catch (err) {
                 console.error("Failed to mark notification as read", err);
+            }
+        }
+
+        function handleNotificationClick(el, id, link) {
+            markNotificationRead(id);
+            if (link) {
+                // Determine if internal or external
+                if (link.startsWith("http")) {
+                    window.open(link, "_blank");
+                } else if (link.startsWith("#")) {
+                    // Internal anchor
+                    const targetId = link.substring(1);
+                    const targetEl = document.getElementById(targetId);
+                    if (targetEl) {
+                        targetEl.scrollIntoView({ behavior: "smooth" });
+                        closeNotificationsPanel();
+                    } else if (link === "#iptv") {
+                        // Special case for IPTV section if ID differs
+                        const iptvSec = document.getElementById('sportsPlaylist');
+                        if (iptvSec) {
+                            iptvSec.scrollIntoView({ behavior: "smooth" });
+                            closeNotificationsPanel();
+                        }
+                    }
+                } else {
+                    // Assume internal ID
+                    const targetEl = document.getElementById(link);
+                    if (targetEl) {
+                        targetEl.scrollIntoView({ behavior: "smooth" });
+                        closeNotificationsPanel();
+                    }
+                }
             }
         }
 
@@ -5750,50 +5794,6 @@
             }, { passive: true });
         })();
         // Notifications Logic
-        async function loadNotifications() {
-            try {
-                const response = await fetch('/api/notifications');
-                if (!response.ok) return;
-                const notifications = await response.json();
-
-                const list = document.getElementById('notificationsList');
-                const badge = document.querySelector('.notification-badge');
-
-                if (!list) return;
-
-                if (!notifications.length) {
-                    list.innerHTML = '<div class="notifications-empty">Hakuna taarifa mpya.</div>';
-                    if (badge) badge.style.display = 'none';
-                    return;
-                }
-
-                // UI Update
-                const unreadCount = notifications.filter(n => !n.read).length;
-                if (badge) {
-                    badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
-                    badge.style.display = unreadCount > 0 ? 'flex' : 'none';
-                }
-
-                list.innerHTML = notifications.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).map(n => `
-                    <div class="notification-item-user ${n.read ? '' : 'unread'}">
-                        <div class="notification-title-user">
-                            ${n.type ? `<span class="notification-type-badge ${n.type}">${n.type}</span> ` : ''}
-                            ${escapeHtml(n.title)}
-                        </div>
-                        <div class="notification-message-user">${escapeHtml(n.message)}</div>
-                        <div class="notification-meta-user">
-                            <i class="far fa-clock"></i> ${new Date(n.createdAt).toLocaleDateString()} ${new Date(n.createdAt).toLocaleTimeString()}
-                        </div>
-                    </div>
-                `).join('');
-
-            } catch (err) {
-                console.error('Failed to load notifications', err);
-            }
-        }
-
-        // Auto-refresh notifications every 60s
-        setInterval(loadNotifications, 60000);
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
@@ -5801,7 +5801,50 @@
             setupEventListeners();
             // Register service worker if needed
             registerServiceWorker();
+
+            // Initialize Animations
+            initAnimations();
         });
+
+        function initAnimations() {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('in-view');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('[data-animate]').forEach(el => {
+                observer.observe(el);
+            });
+
+            // Also animate about cards staggered
+            const aboutObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const cards = entry.target.querySelectorAll('.about-card');
+                        cards.forEach((card, index) => {
+                            setTimeout(() => {
+                                card.style.opacity = '1';
+                                card.style.animation = 'fadeUp 0.8s ease forwards';
+                            }, index * 100);
+                        });
+                        aboutObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.2 });
+
+            const aboutSection = document.getElementById('about');
+            if (aboutSection) aboutObserver.observe(aboutSection);
+        }
     </script>
     <!-- About Modal -->
     <div class="modal-overlay" id="aboutModal">

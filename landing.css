@@ -216,6 +216,7 @@ header {
     font-size: 1rem;
     line-height: 1.5;
     display: -webkit-box;
+    line-clamp: 2;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
@@ -689,4 +690,75 @@ video {
     .sports-layout {
         grid-template-columns: 1fr;
     }
+}
+
+/* Marquee */
+.marquee-container {
+    width: 100%;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 10px 0;
+    margin-bottom: 20px;
+    white-space: nowrap;
+    position: relative;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.marquee-content {
+    display: inline-block;
+    padding-left: 100%;
+    animation: marquee 25s linear infinite;
+    font-size: 14px;
+    font-weight: 500;
+    color: #e5e7eb;
+}
+
+.marquee-content:hover {
+    animation-play-state: paused;
+}
+
+@keyframes marquee {
+    0% {
+        transform: translate(0, 0);
+    }
+
+    100% {
+        transform: translate(-100%, 0);
+    }
+}
+
+.marquee-item {
+    display: inline-block;
+    padding: 0 30px;
+}
+
+.marquee-separator {
+    color: var(--accent-color);
+    margin: 0 10px;
+}
+
+/* Footer Socials */
+.social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.social-link:hover {
+    background: var(--primary-color);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(138, 43, 226, 0.4);
+}
+
+.social-link .fab {
+    line-height: 40px;
 }

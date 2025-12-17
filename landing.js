@@ -59,10 +59,14 @@ const EMBEDDED_STREAMS = [
 ];
 
 // Initialization
+const API_BASE = 'http://localhost:8080';
+
 document.addEventListener('DOMContentLoaded', () => {
     loadStreams();
     loadIptv();
     loadNotifications();
+    loadScrollingText();
+    loadSettings();
     setupEventListeners();
     startNotificationPolling();
     updateFavoritesButton();
@@ -99,7 +103,7 @@ function setupEventListeners() {
 // Data Loading
 async function loadStreams() {
     try {
-        const res = await fetch('http://localhost:3000/api/streams');
+        const res = await fetch(`${API_BASE}/api/streams`);
         if (!res.ok) throw new Error('API Error');
         streams = await res.json();
     } catch (err) {
@@ -117,7 +121,7 @@ async function loadStreams() {
 
 async function loadIptv() {
     try {
-        const res = await fetch('http://localhost:3000/api/iptv-playlists');
+        const res = await fetch(`${API_BASE}/api/iptv-playlists`);
         if (!res.ok) return;
         const data = await res.json();
 
@@ -198,7 +202,7 @@ function renderChannels(list) {
 // Notification Logic
 async function loadNotifications() {
     try {
-        const res = await fetch('http://localhost:3000/api/notifications');
+        const res = await fetch(`${API_BASE}/api/notifications`);
         if (!res.ok) return;
         notifications = await res.json();
         updateNotificationBadge();
@@ -240,7 +244,7 @@ function updateNotificationBadge() {
 
 async function markNotificationRead(id) {
     try {
-        await fetch(`http://localhost:3000/api/notifications/${id}/read`, { method: 'POST' });
+        await fetch(`${API_BASE}/api/notifications/${id}/read`, { method: 'POST' });
         const n = notifications.find(x => x.id === id);
         if (n) n.read = true;
         updateNotificationBadge();
@@ -292,18 +296,19 @@ async function selectSportsCategory(key) {
             url: c.url || c.streamUrl,
             group: c.group || category.label
         }));
-    } else if (category.url) {
-        try {
-            const res = await fetch(category.url);
-            if (res.ok) {
-                const text = await res.text();
-                channels = parseM3U(text, key);
+    }
+
+    // Always try to fetch from proxy if it's a playlist OR if we just want to get everything consolidated
+    try {
+        const res = await fetch(`${API_BASE}/api/iptv/proxy/${key}`);
+        if (res.ok) {
+            const data = await res.json();
+            if (data.channels && data.channels.length > 0) {
+                channels = data.channels;
             }
-        } catch (e) {
-            console.error('Failed to load playlist', e);
-            sportsChannelList.innerHTML = '<div class="channel-error">Failed to load playlist.</div>';
-            return;
         }
+    } catch (e) {
+        console.warn("Using local fallback for channels due to proxy error", e);
     }
 
     iptvCache[key] = channels;
@@ -551,4 +556,58 @@ function closeModal() {
     modalVideo.pause();
     modalVideo.src = '';
     if (hls) hls.destroy();
+}
+
+// --- New Features Logic ---
+
+async function loadScrollingText() {
+    try {
+        const res = await fetch(`${API_BASE}/api/scrolling-text`);
+        if (!res.ok) return;
+        const messages = await res.json();
+        const container = document.getElementById('marqueeContainer');
+        const content = document.getElementById('marqueeContent');
+
+        if (messages.length > 0 && container && content) {
+            container.style.display = 'block';
+            content.innerHTML = messages.map(m =>
+                `<span class="marquee-item">${m.text}</span>`
+            ).join('<span class="marquee-separator">★</span>');
+        }
+    } catch (e) {
+        console.warn('Failed to load scrolling text');
+    }
+}
+
+async function loadSettings() {
+    try {
+        const res = await fetch(`${API_BASE}/api/settings`);
+        if (!res.ok) return;
+        const settings = await res.json();
+
+        // About
+        const aboutSection = document.getElementById('aboutSection');
+        if (aboutSection && settings.about && settings.about.content) {
+            aboutSection.innerHTML = `<p>${settings.about.content.replace(/\n/g, '<br>')}</p>`;
+        }
+
+        // Socials
+        const footerSocials = document.getElementById('footerSocials');
+        if (footerSocials && settings.social) {
+            const { youtube, facebook, instagram } = settings.social;
+            let html = '';
+            if (youtube && youtube.username) {
+                html += `<a href="${youtube.url || '#'}" target="_blank" class="social-link"><i class="fab fa-youtube"></i></a>`;
+            }
+            if (facebook && facebook.username) {
+                html += `<a href="${facebook.url || '#'}" target="_blank" class="social-link"><i class="fab fa-facebook"></i></a>`;
+            }
+            if (instagram && instagram.username) {
+                html += `<a href="${instagram.url || '#'}" target="_blank" class="social-link"><i class="fab fa-instagram"></i></a>`;
+            }
+            footerSocials.innerHTML = html;
+        }
+    } catch (e) {
+        console.warn('Failed to load settings');
+    }
 }
