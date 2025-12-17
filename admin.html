@@ -173,11 +173,27 @@
             margin-bottom: 14px;
         }
 
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .input-group {
             display: flex;
             flex-direction: column;
-            gap: 5px;
-            margin-bottom: 10px;
+            gap: 6px;
+        }
+
+        .input-group.full-width {
+            grid-column: 1 / -1;
         }
 
         label {
@@ -1076,59 +1092,61 @@
                         Weka m3u8 link yako, chagua category na maelezo mengine, kisha hifadhi.
                     </div>
 
-                    <div class="input-group">
-                        <label for="streamTitle">Jina la Channel / Movie *</label>
-                        <input type="text" id="streamTitle" placeholder="Mfano: Azam Sports HD">
-                    </div>
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label for="streamTitle">Jina la Channel / Movie *</label>
+                            <input type="text" id="streamTitle" placeholder="Mfano: Azam Sports HD">
+                        </div>
 
-                    <div class="input-group">
-                        <label for="streamUrl">M3U8 Stream URL *</label>
-                        <input type="text" id="streamUrl" placeholder="https://example.com/stream.m3u8">
-                    </div>
+                        <div class="input-group">
+                            <label for="streamUrl">M3U8 Stream URL *</label>
+                            <input type="text" id="streamUrl" placeholder="https://example.com/stream.m3u8">
+                        </div>
 
-                    <div class="input-group">
-                        <label for="category">Category *</label>
-                        <select id="category">
-                            <!-- options will be filled dynamically from backend so it matches user app -->
-                        </select>
-                    </div>
+                        <div class="input-group">
+                            <label for="category">Category *</label>
+                            <select id="category">
+                                <!-- options will be filled dynamically from backend -->
+                            </select>
+                        </div>
 
-                    <div class="input-group">
-                        <label for="thumbnail">Thumbnail (Image URL)</label>
-                        <input type="text" id="thumbnail" placeholder="Hiari: picha ya background (poster)">
-                    </div>
+                        <div class="input-group">
+                            <label for="thumbnail">Thumbnail (Image URL)</label>
+                            <input type="text" id="thumbnail" placeholder="Hiari: image URL">
+                        </div>
 
-                    <div class="input-group">
-                        <label for="year">Year</label>
-                        <input type="text" id="year" placeholder="Mfano: 2024">
-                    </div>
+                        <div class="input-group">
+                            <label for="year">Year</label>
+                            <input type="text" id="year" placeholder="Mfano: 2024">
+                        </div>
 
-                    <div class="input-group">
-                        <label for="rating">Rating</label>
-                        <input type="text" id="rating" placeholder="Mfano: 4.8">
-                    </div>
+                        <div class="input-group">
+                            <label for="rating">Rating</label>
+                            <input type="text" id="rating" placeholder="Mfano: 4.8">
+                        </div>
 
-                    <div class="input-group">
-                        <label for="quality">Quality</label>
-                        <input type="text" id="quality" placeholder="Mfano: 1080p, 720p">
-                    </div>
+                        <div class="input-group">
+                            <label for="quality">Quality</label>
+                            <input type="text" id="quality" placeholder="Mfano: 1080p">
+                        </div>
 
-                    <div class="input-group">
-                        <label for="genre">Genre</label>
-                        <input type="text" id="genre" placeholder="Mfano: Sports, Action, Drama">
-                    </div>
+                        <div class="input-group">
+                            <label for="genre">Genre</label>
+                            <input type="text" id="genre" placeholder="Mfano: Sports">
+                        </div>
 
-                    <div class="input-group">
-                        <label for="description">Maelezo (Description)</label>
-                        <textarea id="description" placeholder="Maelezo mafupi ya channel / movie"></textarea>
-                    </div>
+                        <div class="input-group full-width">
+                            <label for="description">Maelezo (Description)</label>
+                            <textarea id="description" placeholder="Maelezo mafupi"></textarea>
+                        </div>
 
-                    <div class="chip-row">
-                        <label
-                            style="display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(209,213,219,0.9);">
-                            <input type="checkbox" id="isFeatured" style="width:auto;">
-                            <span>Onyesha kwenye Hero / Carousel (Featured)</span>
-                        </label>
+                        <div class="chip-row full-width">
+                            <label
+                                style="display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(209,213,219,0.9);">
+                                <input type="checkbox" id="isFeatured" style="width:auto;">
+                                <span>Onyesha kwenye Hero Slider (Featured)</span>
+                            </label>
+                        </div>
                     </div>
 
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;">
@@ -1152,32 +1170,31 @@
                         Tuma ujumbe kwa watumiaji wako. Ujumbe huu utaonekana kwenye app yao.
                     </div>
 
-                    <div class="input-group">
-                        <label for="notificationTitle">Kichwa cha Ujumbe *</label>
-                        <input type="text" id="notificationTitle" placeholder="Mfano: Matangazo Muhimu">
-                    </div>
+                    <div class="form-grid">
+                        <div class="input-group full-width">
+                            <label for="notificationTitle">Kichwa cha Ujumbe *</label>
+                            <input type="text" id="notificationTitle" placeholder="Mfano: Matangazo Muhimu">
+                        </div>
 
-                    <div class="input-group">
-                        <label for="notificationMessage">Ujumbe *</label>
-                        <textarea id="notificationMessage" placeholder="Weka ujumbe wako hapa..."></textarea>
-                    </div>
+                        <div class="input-group full-width">
+                            <label for="notificationMessage">Ujumbe *</label>
+                            <textarea id="notificationMessage" placeholder="Weka ujumbe wako hapa..."></textarea>
+                        </div>
 
-                    <div class="input-group">
-                        <label for="notificationType">Aina ya Notification</label>
-                        <select id="notificationType">
-                            <option value="info">Habari (Info)</option>
-                            <option value="success">Mafanikio (Success)</option>
-                            <option value="warning">Onyo (Warning)</option>
-                            <option value="error">Hitilafu (Error)</option>
-                        </select>
-                    </div>
+                        <div class="input-group">
+                            <label for="notificationType">Aina ya Notification</label>
+                            <select id="notificationType">
+                                <option value="info">Habari (Info)</option>
+                                <option value="success">Mafanikio (Success)</option>
+                                <option value="warning">Onyo (Warning)</option>
+                                <option value="error">Hitilafu (Error)</option>
+                            </select>
+                        </div>
 
-                    <div class="input-group">
-                        <label for="notificationLink">Link / Action (Optional)</label>
-                        <input type="text" id="notificationLink"
-                            placeholder="Mfano: #movies, #iptv, au https://google.com">
-                        <small style="color:rgba(148,163,184,0.7);font-size:11px;">Itafungua sehemu hii user
-                            akibonyeza.</small>
+                        <div class="input-group">
+                            <label for="notificationLink">Link / Action (Optional)</label>
+                            <input type="text" id="notificationLink" placeholder="#iptv">
+                        </div>
                     </div>
 
                     <button class="btn btn-primary" id="sendNotificationBtn" style="width:100%;margin-top:8px;">
@@ -1201,19 +1218,21 @@
                         watumiaji.
                     </div>
 
-                    <div class="input-group">
-                        <label for="iptvLabel">Jina la Category *</label>
-                        <input type="text" id="iptvLabel" placeholder="Mfano: Sports Live">
-                    </div>
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label for="iptvLabel">Jina la Category *</label>
+                            <input type="text" id="iptvLabel" placeholder="Mfano: Sports Live">
+                        </div>
 
-                    <div class="input-group">
-                        <label for="iptvKey">Unique Key (slug)</label>
-                        <input type="text" id="iptvKey" placeholder="mf: sports-live">
-                    </div>
+                        <div class="input-group">
+                            <label for="iptvKey">Unique Key (slug)</label>
+                            <input type="text" id="iptvKey" placeholder="mf: sports-live">
+                        </div>
 
-                    <div class="input-group">
-                        <label for="iptvPlaylistUrl">Playlist URL (M3U / JSON)</label>
-                        <input type="text" id="iptvPlaylistUrl" placeholder="https://example.com/sports.m3u">
+                        <div class="input-group full-width">
+                            <label for="iptvPlaylistUrl">Playlist URL (M3U / JSON)</label>
+                            <input type="text" id="iptvPlaylistUrl" placeholder="https://example.com/sports.m3u">
+                        </div>
                     </div>
 
                     <div class="iptv-note">Unaweza pia kuongeza channel moja moja hapa chini kama hauna playlist URL.
@@ -1261,12 +1280,14 @@
                 <div class="section-title">Scrolling Text (Marquee)</div>
                 <div class="section-subtitle">Manage the scrolling text that appears on the homepage.</div>
 
-                <div class="input-group">
-                    <label>New Message</label>
-                    <input type="text" id="scrollText" placeholder="Enter text here...">
+                <div class="form-grid">
+                    <div class="input-group full-width">
+                        <label>Ujumbe Mpya (New Message)</label>
+                        <input type="text" id="scrollText" placeholder="Mfano: TV Stream PRO is live!">
+                    </div>
                 </div>
                 <button class="btn btn-primary" id="addScrollTextBtn">
-                    <i class="fas fa-plus"></i> Add Text
+                    <i class="fas fa-plus"></i> Ongeza Maandishi
                 </button>
 
                 <div class="section-title" style="margin-top:20px;">Active Messages</div>
@@ -1279,28 +1300,28 @@
             <div class="tab-content" id="settingsTab">
                 <div class="section-title">Site Settings</div>
 
-                <div class="input-group">
-                    <label>About Us Content</label>
-                    <textarea id="aboutContent" style="min-height: 100px;"></textarea>
-                </div>
+                <div class="form-grid">
+                    <div class="input-group full-width">
+                        <label>Kuhusu Sisi (About Content)</label>
+                        <textarea id="aboutContent" style="min-height: 100px;"></textarea>
+                    </div>
 
-                <div class="section-title" style="margin-top:20px; font-size:16px;">Footer Social Links</div>
-
-                <div class="input-group">
-                    <label>YouTube Username</label>
-                    <input type="text" id="socialYoutube" placeholder="videoproduction">
-                </div>
-                <div class="input-group">
-                    <label>Facebook Username</label>
-                    <input type="text" id="socialFacebook" placeholder="username">
-                </div>
-                <div class="input-group">
-                    <label>Instagram Username</label>
-                    <input type="text" id="socialInstagram" placeholder="username">
+                    <div class="input-group">
+                        <label>YouTube Username</label>
+                        <input type="text" id="socialYoutube" placeholder="username">
+                    </div>
+                    <div class="input-group">
+                        <label>Facebook Username</label>
+                        <input type="text" id="socialFacebook" placeholder="username">
+                    </div>
+                    <div class="input-group">
+                        <label>Instagram Username</label>
+                        <input type="text" id="socialInstagram" placeholder="username">
+                    </div>
                 </div>
 
                 <button class="btn btn-primary" id="saveSettingsBtn" style="margin-top:10px;">
-                    <i class="fas fa-save"></i> Save Settings
+                    <i class="fas fa-save"></i> Hifadhi Mipangilio
                 </button>
                 <div class="success" id="settingsSuccess" style="display:none;">Settings Saved!</div>
             </div>

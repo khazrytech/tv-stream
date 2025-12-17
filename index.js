@@ -70,6 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
     startNotificationPolling();
     updateFavoritesButton();
+    initAnimations();
 });
 
 function setupEventListeners() {
@@ -441,8 +442,7 @@ function renderProgressDots() {
     if (!heroProgress) return;
     heroProgress.innerHTML = featuredStreams.map((_, idx) => `
         <span class="dot ${idx === currentSlide ? 'active' : ''}" 
-              onclick="goToSlide(${idx})"
-              style="width: 10px; height: 10px; border-radius: 50%; background: ${idx === currentSlide ? 'var(--primary-color)' : 'rgba(255,255,255,0.3)'}; cursor: pointer; transition: all 0.3s;">
+              onclick="goToSlide(${idx})">
         </span>
     `).join('');
 }
@@ -465,6 +465,25 @@ function startAutoSlide() {
 
 function resetAutoSlide() {
     startAutoSlide();
+}
+
+// Modern Animations logic
+function initAnimations() {
+    const observerOptions = {
+        threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.fade-in-section').forEach(section => {
+        observer.observe(section);
+    });
 }
 
 // Favorites Functions

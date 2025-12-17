@@ -22,9 +22,9 @@
 body {
     background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
     color: var(--text-primary);
-    height: 100vh;
-    overflow: hidden;
+    min-height: 100vh;
     display: flex;
+    overflow-x: hidden;
 }
 
 /* Sidebar */
@@ -93,7 +93,14 @@ body {
 .main-content {
     flex: 1;
     padding: 20px 40px;
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    position: relative;
+}
+
+.content-wrapper {
+    flex: 1;
 }
 
 /* Header */
@@ -738,27 +745,70 @@ video {
     margin: 0 10px;
 }
 
-/* Footer Socials */
-.social-link {
+/* Footer */
+footer {
+    margin-top: auto;
+    padding: 40px 0 20px;
+    border-top: 1px solid var(--glass-border);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.footer-content {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+/* Animations */
+.fade-in-section {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.fade-in-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Hero Progress Dots */
+.hero-progress {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 20;
+}
+
+.hero-progress .dot {
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    font-size: 1.2rem;
-    transition: all 0.3s ease;
-    text-decoration: none;
+    background: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.3s;
 }
 
-.social-link:hover {
+.hero-progress .dot.active {
     background: var(--primary-color);
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(138, 43, 226, 0.4);
+    transform: scale(1.2);
+    box-shadow: 0 0 10px var(--primary-color);
 }
 
-.social-link .fab {
-    line-height: 40px;
+/* Glassmorphism Refinement */
+.card,
+.match-card,
+.sports-layout,
+.hero {
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.card:hover {
+    box-shadow: 0 0 20px rgba(138, 43, 226, 0.4);
 }
