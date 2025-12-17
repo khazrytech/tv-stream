@@ -4,269 +4,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#9146FF">
-    <title>🎮 TV Stream PRO - Live</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="https://vjs.zencdn.net/8.6.1/video-js.css">
-    <link rel="stylesheet" href="./index.css">
+    <title>TV Stream</title>
+    <link rel="stylesheet" href="index.css">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- HLS.js -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
 
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="nav-container">
-            <a href="./" class="logo">
-                <i class="fas fa-bolt"></i>
-                <span>STREAM</span>
-            </a>
 
-            <nav class="nav-links">
-                <a href="#" class="nav-link">Live</a>
-                <a href="#" class="nav-link">Movies</a>
-                <a href="#" class="nav-link">Sports</a>
-                <a href="./football-ai.html" class="nav-link">AI Predictions</a>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div>
+            <div class="logo">
+                <i class="fas fa-play-circle" style="color: var(--primary-color);"></i> TV Stream
+            </div>
+
+            <nav class="menu">
+                <ul>
+                    <li><a href="#" class="active"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="#"><i class="fas fa-broadcast-tower"></i> Live TV</a></li>
+                    <li><a href="#"><i class="fas fa-film"></i> Movies</a></li>
+                    <li><a href="#"><i class="fas fa-tv"></i> Series</a></li>
+                </ul>
+
+                <div class="section-title">My List</div>
+                <ul>
+                    <li><a href="#"><i class="fas fa-heart"></i> Favorites</a></li>
+                    <li><a href="#"><i class="fas fa-clock"></i> History</a></li>
+                </ul>
+
+                <!-- System section removed -->
             </nav>
-
-            <div class="search-container">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" class="search-input" placeholder="Search streams..." id="searchInput">
-            </div>
         </div>
-    </header>
 
-    <!-- Main -->
-    <main class="main">
-        <div class="container">
-            <!-- Hero -->
-            <section class="hero">
-                <div class="hero-content">
-                    <div class="hero-badge">
-                        <i class="fas fa-circle" style="color: #1DB954; font-size: 0.5rem;"></i>
-                        <span>LIVE NOW</span>
-                    </div>
-                    <h1 class="hero-title">Watch Live. Anytime. Anywhere.</h1>
-                    <p class="hero-subtitle">
-                        Stream thousands of live channels, movies, and sports.
-                        New content added every day. Join millions of viewers worldwide.
-                    </p>
-                </div>
-            </section>
-
-            <!-- Category Tabs - Like Mockup -->
-            <section class="category-tabs">
-                <button class="category-tab active" data-category="all" onclick="filterCategory('all')">
-                    <i class="fas fa-fire"></i>
-                    <span>Recommended</span>
-                </button>
-                <button class="category-tab" data-category="live-tv" onclick="filterCategory('live-tv')">
-                    <i class="fas fa-circle" style="color: #1DB954; font-size: 0.5rem;"></i>
-                    <span>Live Now</span>
-                </button>
-                <button class="category-tab" data-category="sports" onclick="filterCategory('sports')">
-                    <i class="fas fa-futbol"></i>
-                    <span>Sports</span>
-                </button>
-                <button class="category-tab" data-category="movies" onclick="filterCategory('movies')">
-                    <i class="fas fa-film"></i>
-                    <span>Movies</span>
-                </button>
-                <button class="category-tab" data-category="rising" onclick="filterCategory('rising')">
-                    <i class="fas fa-chart-line"></i>
-                    <span>Rising</span>
-                </button>
-            </section>
-
-            <!-- Content Container -->
-            <div id="categoriesContainer">
-                <div class="loading" id="loadingState">
-                    <div class="spinner"></div>
-                    <p style="color: var(--text-secondary); font-weight: 600;">Loading streams...</p>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- Video Modal -->
-    <div class="video-modal" id="videoModal">
-        <div class="video-container">
-            <button class="close-video" onclick="closeVideo()">
-                <i class="fas fa-times"></i>
-            </button>
-            <video id="player" class="video-js vjs-big-play-centered" controls preload="auto"></video>
+        <div class="menu">
+            <ul>
+                <li><a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
         </div>
     </div>
 
-    <script src="https://vjs.zencdn.net/8.6.1/video.min.js"></script>
-    <script>
-        let player = null;
-        let allStreams = {};
-        let searchQuery = '';
-        let activeCategory = 'all';
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header>
+            <div class="search-bar">
+                <i class="fas fa-search" style="color: #a0a0c0;"></i>
+                <input type="text" placeholder="Search channels, movies, series...">
+            </div>
 
-        document.addEventListener('DOMContentLoaded', () => {
-            loadContent();
-            setupSearch();
-        });
+            <div class="user-actions">
+                <button class="icon-btn">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-dot"></span>
+                </button>
+                <img src="https://ui-avatars.com/api/?name=User&background=8a2be2&color=fff" alt="Profile"
+                    class="profile-pic">
+            </div>
+        </header>
 
-        function filterCategory(category) {
-            activeCategory = category;
 
-            // Update active tab
-            document.querySelectorAll('.category-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            event.target.closest('.category-tab').classList.add('active');
+        <!-- Scrolling Text Marquee -->
+        <div class="marquee-container" id="marqueeContainer" style="display:none;">
+            <div class="marquee-content" id="marqueeContent">
+                <!-- Text injected via JS -->
+            </div>
+        </div>
 
-            renderCategories();
-        }
-
-        async function loadContent() {
-            try {
-                const response = await fetch('/api/streams');
-                const data = await response.json();
-
-                allStreams = data.categoryData || {};
-                document.getElementById('loadingState').style.display = 'none';
-                renderCategories();
-            } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('loadingState').style.display = 'none';
-                showError();
-            }
-        }
-
-        function renderCategories() {
-            const container = document.getElementById('categoriesContainer');
-            let categories = Object.entries(allStreams).filter(([_, cat]) =>
-                cat.items && cat.items.length > 0
-            );
-
-            // Filter by active category
-            if (activeCategory !== 'all') {
-                if (activeCategory === 'rising') {
-                    // Show all categories for "rising" (trending)
-                    categories = categories;
-                } else {
-                    categories = categories.filter(([catId]) => catId === activeCategory);
-                }
-            }
-
-            if (categories.length === 0) {
-                showEmpty();
-                return;
-            }
-
-            container.innerHTML = categories.map(([catId, category]) => {
-                const filteredItems = searchQuery
-                    ? category.items.filter(item =>
-                        item.title.toLowerCase().includes(searchQuery.toLowerCase())
-                    )
-                    : category.items;
-
-                if (filteredItems.length === 0) return '';
-
-                return `
-                    <section class="section">
-                        <div class="section-header">
-                            <h2 class="section-title">${category.title}</h2>
-                            <span class="section-count">${filteredItems.length} Streams</span>
-                        </div>
-                        <div class="content-row">
-                            ${filteredItems.map(item => `
-                                <div class="content-card" onclick="playVideo('${escapeHtml(item.streamUrl)}', '${escapeHtml(item.title)}')">
-                                    ${item.thumbnail
-                        ? `<img src="${item.thumbnail}" alt="${escapeHtml(item.title)}" class="card-thumbnail" loading="lazy">`
-                        : '<div class="card-thumbnail"></div>'
-                    }
-                                    <div class="card-content">
-                                        <h3 class="card-title">${escapeHtml(item.title)}</h3>
-                                        <div class="card-meta">
-                                            ${item.year ? `<span><i class="fas fa-calendar"></i> ${item.year}</span>` : ''}
-                                            ${item.rating ? `<span class="card-badge">⭐ ${item.rating}</span>` : ''}
-                                        </div>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </section>
-                `;
-            }).join('');
-        }
-
-        function playVideo(url, title) {
-            const modal = document.getElementById('videoModal');
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-
-            if (player) player.dispose();
-
-            player = videojs('player', {
-                controls: true,
-                autoplay: true,
-                preload: 'auto',
-                fluid: true,
-                sources: [{ src: url, type: 'application/x-mpegURL' }]
-            });
-
-            document.title = `▶️ ${title} - LIVE`;
-        }
-
-        function closeVideo() {
-            const modal = document.getElementById('videoModal');
-            modal.classList.remove('active');
-            document.body.style.overflow = '';
-
-            if (player) {
-                player.dispose();
-                player = null;
-            }
-
-            document.title = '🎮 TV Stream PRO - Live';
-        }
-
-        function setupSearch() {
-            const searchInput = document.getElementById('searchInput');
-            let debounceTimer;
-
-            searchInput.addEventListener('input', (e) => {
-                clearTimeout(debounceTimer);
-                debounceTimer = setTimeout(() => {
-                    searchQuery = e.target.value.trim();
-                    renderCategories();
-                }, 300);
-            });
-        }
-
-        function showError() {
-            document.getElementById('categoriesContainer').innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-exclamation-triangle empty-icon"></i>
-                    <h3 class="empty-title">Connection Failed</h3>
-                    <p class="empty-subtitle">Unable to load streams. Please refresh to try again.</p>
+        <!-- Hero Section (Carousel) -->
+        <div class="hero" id="heroSlider"
+            style="background: linear-gradient(to right, rgba(15, 12, 41, 0.9), rgba(48, 43, 99, 0.7)), url('https://source.unsplash.com/random/1600x900/?tv,studio') no-repeat center center/cover;">
+            <div class="hero-content">
+                <div class="trending-tag" id="heroTag">
+                    <i class="fas fa-star"></i> Featured
                 </div>
-            `;
-        }
 
-        function showEmpty() {
-            document.getElementById('categoriesContainer').innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-video-slash empty-icon"></i>
-                    <h3 class="empty-title">No Streams Available</h3>
-                    <p class="empty-subtitle">Check back soon for live content</p>
+                <h1 id="heroTitle">Welcome to TV Stream</h1>
+                <p id="heroDescription">Enjoy unlimited access to live details, movies, and TV shows. Start streaming
+                    your favorite content now.</p>
+
+                <div class="hero-meta" style="margin-bottom: 20px; color: rgba(255,255,255,0.7); font-size: 0.9em;">
+                    <span id="heroQuality"
+                        style="border:1px solid rgba(255,255,255,0.3); padding: 2px 6px; border-radius: 4px; margin-right: 10px;">HD</span>
+                    <span id="heroGenre">Variety</span>
                 </div>
-            `;
-        }
 
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
+                <div class="hero-buttons">
+                    <button id="heroWatchBtn" class="btn-primary"
+                        style="background-color: var(--primary-color); color: white; border: none; cursor: pointer;">
+                        <i class="fas fa-play"></i> Start Watching
+                    </button>
+                    <button id="heroFavoriteBtn" class="btn-secondary"
+                        style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 10px 15px; border-radius: 5px; cursor: pointer; margin-left: 10px;">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                </div>
+            </div>
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeVideo();
-        });
-    </script>
+            <!-- Carousel Progress -->
+            <div class="hero-progress" id="heroProgress"
+                style="position: absolute; bottom: 20px; right: 40px; display: flex; gap: 8px;">
+                <!-- dots injected by JS -->
+            </div>
+        </div>
+
+        <!-- Sports/IPTV Section (Restored) -->
+        <section class="sports-section section" id="sportsPlaylist" style="display:none; margin-top: 20px;">
+            <div class="section-header-grid">
+                <div>
+                    <h2 class="section-title">IPTV Channels</h2>
+                    <p class="section-subtitle" style="color:rgba(255,255,255,0.6); font-size:0.9em;">
+                        Select a playlist to browse channels.
+                    </p>
+                </div>
+                <button class="floating-pill" onclick="refreshSportsCategory()" style="cursor:pointer;">
+                    <i class="fas fa-rotate"></i> Refresh
+                </button>
+            </div>
+            <div class="sports-layout glass-panel">
+                <div class="sports-player-panel">
+                    <div class="sports-player-meta">
+                        <p class="floating-pill" id="sportsCurrentCategory">Select a Playlist</p>
+                        <h3 id="sportsChannelTitle">Select a channel to play</h3>
+                    </div>
+                    <div class="sports-player-shell">
+                        <video id="sportsPlayer" controls playsinline></video>
+                        <div class="sports-player-status" id="sportsPlayerStatus">
+                            <i class="fas fa-satellite-dish"></i>
+                            <span>Waiting for selection...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="sports-browser">
+                    <div class="sports-tabs" id="sportsCategoryTabs">
+                        <!-- Tabs injected by JS -->
+                    </div>
+                    <div class="sports-channel-list" id="sportsChannelList">
+                        <div class="channel-placeholder" style="padding:20px; text-align:center; color:#aaa;">
+                            Select a category above.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Standard Content Grid -->
+        <div class="section-header">
+            <h2>All Channels</h2>
+        </div>
+
+        <div class="cards-row" id="contentGrid">
+            <!-- Items injected by landing.js -->
+            <div style="color:white; padding: 20px;">Loading channels...</div>
+        </div>
+
+        <!-- About Section -->
+        <div class="section-header" style="margin-top: 40px;">
+            <h2>About Us</h2>
+        </div>
+        <div class="glass-panel" id="aboutSection"
+            style="padding: 20px; border-radius: 12px; margin-bottom: 20px; color: rgba(255,255,255,0.8); line-height: 1.6;">
+            <!-- Content injected via JS -->
+            <p>Welcome to TV Stream.</p>
+        </div>
+
+        <!-- Footer -->
+        <footer class="app-footer"
+            style="padding: 20px; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 40px;">
+            <div class="footer-socials" id="footerSocials"
+                style="display: flex; justify-content: center; gap: 20px; margin-bottom: 15px;">
+                <!-- Icons injected via JS -->
+            </div>
+            <p style="color: rgba(255,255,255,0.5); font-size: 0.9em;">&copy; 2024 TV Stream PRO. All rights reserved.
+            </p>
+        </footer>
+
+    </div>
+
+    <!-- Video Player Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose"><i class="fas fa-times"></i></button>
+            <div class="video-container">
+                <video id="modalVideo" controls></video>
+                <div class="player-status" id="playerStatus">
+                    <i class="fas fa-circle-notch fa-spin"></i>
+                    <span>Connecting...</span>
+                </div>
+            </div>
+
+            <div class="modal-info">
+                <h3 id="modalTitle">Channel Name</h3>
+                <div class="modal-controls">
+                    <!-- Add custom controls if needed -->
+                </div>
+                <!-- Related Channels Section -->
+                <div class="related-channels-section"
+                    style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
+                    <h4 style="font-size: 0.9em; color: rgba(255,255,255,0.7); margin-bottom: 10px;">Related Channels
+                    </h4>
+                    <div id="relatedChannelsGrid"
+                        style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px;">
+                        <!-- Related items injected by JS -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- Application Logic -->
+    <script src="index.js"></script>
+
 </body>
 
 </html>

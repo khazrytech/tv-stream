@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#9146FF">
+    <title>🎮 TV Stream PRO - Live</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://vjs.zencdn.net/8.6.1/video-js.css">
+    <link rel="stylesheet" href="./index.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="nav-container">
+            <a href="./" class="logo">
+                <i class="fas fa-bolt"></i>
+                <span>STREAM</span>
+            </a>
+
+            <nav class="nav-links">
+                <a href="#" class="nav-link">Live</a>
+                <a href="#" class="nav-link">Movies</a>
+                <a href="#" class="nav-link">Sports</a>
+                <a href="./football-ai.html" class="nav-link">AI Predictions</a>
+            </nav>
+
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="Search streams..." id="searchInput">
+            </div>
+        </div>
+    </header>
+
+    <!-- Main -->
+    <main class="main">
+        <div class="container">
+            <!-- Hero -->
+            <section class="hero">
+                <div class="hero-content">
+                    <div class="hero-badge">
+                        <i class="fas fa-circle" style="color: #1DB954; font-size: 0.5rem;"></i>
+                        <span>LIVE NOW</span>
+                    </div>
+                    <h1 class="hero-title">Watch Live. Anytime. Anywhere.</h1>
+                    <p class="hero-subtitle">
+                        Stream thousands of live channels, movies, and sports.
+                        New content added every day. Join millions of viewers worldwide.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Category Tabs - Like Mockup -->
+            <section class="category-tabs">
+                <button class="category-tab active" data-category="all" onclick="filterCategory('all')">
+                    <i class="fas fa-fire"></i>
+                    <span>Recommended</span>
+                </button>
+                <button class="category-tab" data-category="live-tv" onclick="filterCategory('live-tv')">
+                    <i class="fas fa-circle" style="color: #1DB954; font-size: 0.5rem;"></i>
+                    <span>Live Now</span>
+                </button>
+                <button class="category-tab" data-category="sports" onclick="filterCategory('sports')">
+                    <i class="fas fa-futbol"></i>
+                    <span>Sports</span>
+                </button>
+                <button class="category-tab" data-category="movies" onclick="filterCategory('movies')">
+                    <i class="fas fa-film"></i>
+                    <span>Movies</span>
+                </button>
+                <button class="category-tab" data-category="rising" onclick="filterCategory('rising')">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Rising</span>
+                </button>
+            </section>
+
+            <!-- Content Container -->
+            <div id="categoriesContainer">
+                <div class="loading" id="loadingState">
+                    <div class="spinner"></div>
+                    <p style="color: var(--text-secondary); font-weight: 600;">Loading streams...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Video Modal -->
+    <div class="video-modal" id="videoModal">
+        <div class="video-container">
+            <button class="close-video" onclick="closeVideo()">
+                <i class="fas fa-times"></i>
+            </button>
+            <video id="player" class="video-js vjs-big-play-centered" controls preload="auto"></video>
+        </div>
+    </div>
+
+    <script src="https://vjs.zencdn.net/8.6.1/video.min.js"></script>
+    <script>
+        let player = null;
+        let allStreams = {};
+        let searchQuery = '';
+        let activeCategory = 'all';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadContent();
+            setupSearch();
+        });
+
+        function filterCategory(category) {
+            activeCategory = category;
+
+            // Update active tab
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.closest('.category-tab').classList.add('active');
+
+            renderCategories();
+        }
+
+        async function loadContent() {
+            try {
+                const response = await fetch('/api/streams');
+                const data = await response.json();
+
+                allStreams = data.categoryData || {};
+                document.getElementById('loadingState').style.display = 'none';
+                renderCategories();
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('loadingState').style.display = 'none';
+                showError();
+            }
+        }
+
+        function renderCategories() {
+            const container = document.getElementById('categoriesContainer');
+            let categories = Object.entries(allStreams).filter(([_, cat]) =>
+                cat.items && cat.items.length > 0
+            );
+
+            // Filter by active category
+            if (activeCategory !== 'all') {
+                if (activeCategory === 'rising') {
+                    // Show all categories for "rising" (trending)
+                    categories = categories;
+                } else {
+                    categories = categories.filter(([catId]) => catId === activeCategory);
+                }
+            }
+
+            if (categories.length === 0) {
+                showEmpty();
+                return;
+            }
+
+            container.innerHTML = categories.map(([catId, category]) => {
+                const filteredItems = searchQuery
+                    ? category.items.filter(item =>
+                        item.title.toLowerCase().includes(searchQuery.toLowerCase())
+                    )
+                    : category.items;
+
+                if (filteredItems.length === 0) return '';
+
+                return `
+                    <section class="section">
+                        <div class="section-header">
+                            <h2 class="section-title">${category.title}</h2>
+                            <span class="section-count">${filteredItems.length} Streams</span>
+                        </div>
+                        <div class="content-row">
+                            ${filteredItems.map(item => `
+                                <div class="content-card" onclick="playVideo('${escapeHtml(item.streamUrl)}', '${escapeHtml(item.title)}')">
+                                    ${item.thumbnail
+                        ? `<img src="${item.thumbnail}" alt="${escapeHtml(item.title)}" class="card-thumbnail" loading="lazy">`
+                        : '<div class="card-thumbnail"></div>'
+                    }
+                                    <div class="card-content">
+                                        <h3 class="card-title">${escapeHtml(item.title)}</h3>
+                                        <div class="card-meta">
+                                            ${item.year ? `<span><i class="fas fa-calendar"></i> ${item.year}</span>` : ''}
+                                            ${item.rating ? `<span class="card-badge">⭐ ${item.rating}</span>` : ''}
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </section>
+                `;
+            }).join('');
+        }
+
+        function playVideo(url, title) {
+            const modal = document.getElementById('videoModal');
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            if (player) player.dispose();
+
+            player = videojs('player', {
+                controls: true,
+                autoplay: true,
+                preload: 'auto',
+                fluid: true,
+                sources: [{ src: url, type: 'application/x-mpegURL' }]
+            });
+
+            document.title = `▶️ ${title} - LIVE`;
+        }
+
+        function closeVideo() {
+            const modal = document.getElementById('videoModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+
+            if (player) {
+                player.dispose();
+                player = null;
+            }
+
+            document.title = '🎮 TV Stream PRO - Live';
+        }
+
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            let debounceTimer;
+
+            searchInput.addEventListener('input', (e) => {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    searchQuery = e.target.value.trim();
+                    renderCategories();
+                }, 300);
+            });
+        }
+
+        function showError() {
+            document.getElementById('categoriesContainer').innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-exclamation-triangle empty-icon"></i>
+                    <h3 class="empty-title">Connection Failed</h3>
+                    <p class="empty-subtitle">Unable to load streams. Please refresh to try again.</p>
+                </div>
+            `;
+        }
+
+        function showEmpty() {
+            document.getElementById('categoriesContainer').innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-video-slash empty-icon"></i>
+                    <h3 class="empty-title">No Streams Available</h3>
+                    <p class="empty-subtitle">Check back soon for live content</p>
+                </div>
+            `;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeVideo();
+        });
+    </script>
+</body>
+
+</html>
