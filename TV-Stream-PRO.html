@@ -437,6 +437,123 @@
             margin-right: 60px;
         }
 
+        /* About & Player Sections */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 20000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: #1e1e2d;
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #fff;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Advanced Player Styles */
+        .advanced-player-section {
+            display: none;
+            /* hidden by default, toggled via menu */
+            padding: 20px 0;
+        }
+
+        .advanced-player-section.active {
+            display: block;
+        }
+
+        .iptv-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 20px;
+            height: 70vh;
+        }
+
+        @media(max-width: 768px) {
+            .iptv-container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+        }
+
+        .iptv-sidebar {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 15px;
+            overflow-y: auto;
+            max-height: 100%;
+        }
+
+        .iptv-main {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .iptv-playlist-item {
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-bottom: 5px;
+        }
+
+        .iptv-playlist-item:hover,
+        .iptv-playlist-item.active {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .manual-url-input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+
         @keyframes marquee-move {
             from {
                 transform: translateX(100%);
@@ -2962,11 +3079,11 @@
     <!-- Moving description / app highlights -->
     <div class="app-marquee">
         <div class="app-marquee-inner">
-            <span><i class="fas fa-bolt"></i> TV Stream PRO – Live TV,
-                Movies, Series, Muziki, Katuni na Radio zote sehemu
-                moja.</span>
-            <span><i class="fas fa-mobile-alt"></i> Imeboreshwa kwa simu na
-                TV Box – interface nyepesi, ya kisasa na yenye kasi.</span>
+            <span>🚀 Karibu TV Stream PRO - Burudani isiyo na kikomo!</span>
+            <span>🔥 Michezo Live, Filamu Mpya na Tamthilia kali.</span>
+            <span>📺 Furahia chaneli za nyumbani na kimataifa kwa ubora wa HD.</span>
+            <span>💎 Premium Experience: Hakuna matangazo sumbufu.</span>
+            <span>🌍 Tufuate kwenye mitandao ya kijamii kwa updates zaidi!</span>
         </div>
     </div>
 
@@ -4534,7 +4651,11 @@
             }
             notificationsBtn?.addEventListener(
                 "click",
-                toggleNotificationsPanel,
+                () => {
+                    toggleNotificationsPanel();
+                    // Mark as read or just refresh on open
+                    loadNotifications();
+                }
             );
             favoritesBtn?.addEventListener("click", showFavorites);
             settingsBtn?.addEventListener("click", openSettingsPanel);
@@ -5628,6 +5749,255 @@
                 }
             }, { passive: true });
         })();
+        // Notifications Logic
+        async function loadNotifications() {
+            try {
+                const response = await fetch('/api/notifications');
+                if (!response.ok) return;
+                const notifications = await response.json();
+
+                const list = document.getElementById('notificationsList');
+                const badge = document.querySelector('.notification-badge');
+
+                if (!list) return;
+
+                if (!notifications.length) {
+                    list.innerHTML = '<div class="notifications-empty">Hakuna taarifa mpya.</div>';
+                    if (badge) badge.style.display = 'none';
+                    return;
+                }
+
+                // UI Update
+                const unreadCount = notifications.filter(n => !n.read).length;
+                if (badge) {
+                    badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+                    badge.style.display = unreadCount > 0 ? 'flex' : 'none';
+                }
+
+                list.innerHTML = notifications.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).map(n => `
+                    <div class="notification-item-user ${n.read ? '' : 'unread'}">
+                        <div class="notification-title-user">
+                            ${n.type ? `<span class="notification-type-badge ${n.type}">${n.type}</span> ` : ''}
+                            ${escapeHtml(n.title)}
+                        </div>
+                        <div class="notification-message-user">${escapeHtml(n.message)}</div>
+                        <div class="notification-meta-user">
+                            <i class="far fa-clock"></i> ${new Date(n.createdAt).toLocaleDateString()} ${new Date(n.createdAt).toLocaleTimeString()}
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (err) {
+                console.error('Failed to load notifications', err);
+            }
+        }
+
+        // Auto-refresh notifications every 60s
+        setInterval(loadNotifications, 60000);
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadNotifications();
+            setupEventListeners();
+            // Register service worker if needed
+            registerServiceWorker();
+        });
+    </script>
+    <!-- About Modal -->
+    <div class="modal-overlay" id="aboutModal">
+        <div class="modal-content" style="max-width: 500px; text-align: center;">
+            <button class="modal-close" style="position: absolute; right: 20px; top: 20px;" onclick="closeAboutModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            <div style="padding: 20px;">
+                <img src="assets/tvstream-logo.png" alt="Logo"
+                    style="width: 80px; border-radius: 12px; margin-bottom: 20px;">
+                <h2 style="margin-bottom: 10px;">TV Stream PRO</h2>
+                <p style="color: var(--muted); margin-bottom: 20px;">Version 2.0.0 (Premium)</p>
+                <div style="line-height: 1.6; color: rgba(255,255,255,0.8);">
+                    <p>Jukwaa bora la burudani linalokupa uwezo wa kutazama Maudhui Mubashara, Filamu na Michezo.</p>
+                    <p style="margin-top: 10px;">Tumejipanga kukupa uzoefu wa kipekee.</p>
+                </div>
+                <div
+                    style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--glass-border); font-size: 13px; color: var(--muted);">
+                    Developed with ❤️ by TechBoy TZ<br>
+                    &copy; 2025 Haki Zote Zimehifadhiwa.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Advanced Player Section (Hidden by default) -->
+    <div class="modal-overlay" id="advancedPlayerModal">
+        <div class="modal-content"
+            style="width: 95vw; height: 90vh; max-width: 1400px; display: flex; flex-direction: column;">
+            <div class="modal-header">
+                <h3 class="modal-title">Advanced Media Player</h3>
+                <button class="modal-close" onclick="closeAdvancedPlayer()"><i class="fas fa-times"></i></button>
+            </div>
+            <div style="flex: 1; overflow: hidden; display: flex; flex-direction: column;">
+                <!-- Manual Input -->
+                <div style="padding: 20px; border-bottom: 1px solid var(--glass-border); display: flex; gap: 10px;">
+                    <input type="text" id="manualM3uInput" class="search-box" style="border-radius: 12px;"
+                        placeholder="Paste M3U8 Link here...">
+                    <button class="action-btn btn-primary" onclick="playManualLink()">
+                        <i class="fas fa-play"></i> Play
+                    </button>
+                </div>
+
+                <div class="iptv-container" style="flex: 1; overflow: hidden; padding: 20px;">
+                    <!-- Sidebar: Playlists & Channels -->
+                    <div class="iptv-sidebar">
+                        <h4 style="margin-bottom: 15px; color: var(--accent);">Playlists</h4>
+                        <div id="iptvPlaylistsList" class="iptv-main">
+                            <!-- Playlists will be loaded here -->
+                            <div style="padding: 20px; text-align: center; color: var(--muted);">Loading...</div>
+                        </div>
+
+                        <h4 style="margin: 20px 0 15px; color: var(--primary);">Channels</h4>
+                        <div id="iptvChannelsList" class="iptv-main">
+                            <div style="font-size: 13px; color: var(--muted);">Select a playlist to see channels</div>
+                        </div>
+                    </div>
+
+                    <!-- Main Player Area -->
+                    <div class="sports-player-shell" style="background: #000; position: relative;">
+                        <video id="advancedVideoPlayer" class="video-js vjs-default-skin vjs-big-play-centered" controls
+                            preload="auto" style="width: 100%; height: 100%;"></video>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://vjs.zencdn.net/8.6.1/video.min.js"></script>
+    <script>
+        // About Modal
+        window.openAboutModal = function () {
+            document.getElementById('aboutModal').classList.add('active');
+        }
+        window.closeAboutModal = function () {
+            document.getElementById('aboutModal').classList.remove('active');
+        }
+
+        // Advanced Player Logic
+        let advancedPlayer = null;
+
+        window.openAdvancedPlayer = function () {
+            document.getElementById('advancedPlayerModal').classList.add('active');
+            if (!advancedPlayer) {
+                advancedPlayer = videojs('advancedVideoPlayer', {
+                    fluid: false,
+                    fill: true,
+                    responsive: true
+                });
+            }
+            loadIptvPlaylistsList();
+        }
+
+        window.closeAdvancedPlayer = function () {
+            document.getElementById('advancedPlayerModal').classList.remove('active');
+            if (advancedPlayer) {
+                advancedPlayer.pause();
+            }
+        }
+
+        async function loadIptvPlaylistsList() {
+            const list = document.getElementById('iptvPlaylistsList');
+            try {
+                // Fetch categories/playlists from Admin API
+                // Currently reusing 'loadIptvCategories' logic concept but for this separate view
+                // For now, let's fetch from the same endpoint used by admin or similar
+                // Or reuse the existing `iptvCategories` global if populated
+
+                // Let's assume we can fetch from /api/iptv-playlists
+                const res = await fetch('/api/iptv-playlists');
+                if (!res.ok) throw new Error('Failed to load');
+                const playlists = await res.json();
+
+                if (!playlists.length) {
+                    list.innerHTML = '<div style="padding:10px; color:var(--muted)">No playlists found.</div>';
+                    return;
+                }
+
+                list.innerHTML = playlists.map(pl => `
+                    <div class="iptv-playlist-item" onclick="loadPlaylistChannels('${pl.key}', this)">
+                        <i class="fas fa-list-ul"></i> ${escapeHtml(pl.label)}
+                    </div>
+                `).join('');
+
+            } catch (err) {
+                console.error(err);
+                list.innerHTML = '<div style="color:var(--danger)">Error loading playlists.</div>';
+            }
+        }
+
+        window.loadPlaylistChannels = async function (key, el) {
+            // Highlight active
+            document.querySelectorAll('.iptv-playlist-item').forEach(e => e.classList.remove('active'));
+            if (el) el.classList.add('active');
+
+            const channelList = document.getElementById('iptvChannelsList');
+            channelList.innerHTML = '<div style="padding:10px; color:var(--muted)">Loading channels...</div>';
+
+            try {
+                // Reuse loadIptvCategory logic from main script if available, or fetch directly
+                // We'll use the existing global function if possible, or reimplement lightweight version
+                const channels = await loadIptvCategory(key); // Assuming this global function exists from previous code
+
+                if (!channels.length) {
+                    channelList.innerHTML = '<div style="padding:10px; color:var(--muted)">No channels in this playlist.</div>';
+                    return;
+                }
+
+                // Group by category/group-title if possible, or just list
+                // For simplicity, just list them
+                channelList.innerHTML = channels.map(ch => `
+                    <div class="iptv-playlist-item" onclick="playAdvancedChannel('${ch.url}', '${ch.title?.replace(/'/g, "\\'")}')">
+                        <div style="font-weight:600">${escapeHtml(ch.title)}</div>
+                        <div style="font-size:11px; color:var(--muted)">${escapeHtml(ch.group || 'General')}</div>
+                    </div>
+                `).join('');
+
+            } catch (err) {
+                console.error(err);
+                channelList.innerHTML = '<div style="color:var(--danger)">Failed to load channels.</div>';
+            }
+        }
+
+        window.playAdvancedChannel = function (url, title) {
+            if (!advancedPlayer) return;
+            advancedPlayer.src({
+                src: url,
+                type: url.includes('.m3u8') ? 'application/x-mpegURL' : 'video/mp4'
+            });
+            advancedPlayer.play();
+        }
+
+        window.playManualLink = function () {
+            const url = document.getElementById('manualM3uInput').value.trim();
+            if (!url) return;
+            playAdvancedChannel(url, 'Manual Stream');
+        }
+
+        // Add menu item for Advanced Player dynamically if not present
+        // Or user can access it via a new button we add to header
+        // Let's add a quick link to the header via JS if it's easier
+        const headerLinks = document.querySelector('.header-quick-links');
+        if (headerLinks) {
+            const playerBtn = document.createElement('a');
+            playerBtn.className = 'quick-link';
+            playerBtn.innerHTML = '<i class="fas fa-play-circle"></i> Player';
+            playerBtn.onclick = (e) => { e.preventDefault(); openAdvancedPlayer(); };
+            headerLinks.appendChild(playerBtn);
+
+            const aboutBtn = document.createElement('a');
+            aboutBtn.className = 'quick-link';
+            aboutBtn.innerHTML = '<i class="fas fa-info-circle"></i> About';
+            aboutBtn.onclick = (e) => { e.preventDefault(); openAboutModal(); };
+            headerLinks.appendChild(aboutBtn);
+        }
+
     </script>
 </body>
 
