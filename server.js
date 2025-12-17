@@ -115,7 +115,7 @@ const CATEGORY_CONFIG = [
 
 const allowedOrigins = (
   process.env.ALLOWED_ORIGINS ||
-  "http://localhost:8080,http://localhost:5173,http://127.0.0.1:8080,https://zoological-stillness-production.up.railway.app,http://127.0.0.1:5500,http://localhost:5500,https://www.tvstream.run.place"
+  "http://localhost:8080,http://localhost:5173,http://127.0.0.1:8080,https://zoological-stillness-production.up.railway.app,http://127.0.0.1:5500,http://localhost:5500,https://www.tvstream.run.place,.onrender.com"
 )
   .split(",")
   .map((origin) => origin.trim())
