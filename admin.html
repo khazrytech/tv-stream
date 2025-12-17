@@ -1135,6 +1135,11 @@
                             <input type="text" id="genre" placeholder="Mfano: Sports">
                         </div>
 
+                        <div class="input-group">
+                            <label for="slideVideo">Slide Video URL (For Hero/Carousel)</label>
+                            <input type="text" id="slideVideo" placeholder="Hiari: preview video URL">
+                        </div>
+
                         <div class="input-group full-width">
                             <label for="description">Maelezo (Description)</label>
                             <textarea id="description" placeholder="Maelezo mafupi"></textarea>
@@ -1327,14 +1332,21 @@
             </div>
     </div>
 
-    <div class="stats">
-        <div class="stat-pill">
-            <span>Jumla Streams</span>
-            <strong id="totalCount">0</strong>
+    <div class="stats" style="margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <div class="stat-card"
+            style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); padding: 15px; border-radius: 12px; text-align: center;">
+            <div style="font-size: 10px; text-transform: uppercase; color: var(--primary);">Jumla Streams</div>
+            <div style="font-size: 20px; font-weight: 700;" id="totalCount">0</div>
         </div>
-        <div class="stat-pill">
-            <span>Featured</span>
-            <strong id="featuredCount">0</strong>
+        <div class="stat-card"
+            style="background: rgba(167, 139, 250, 0.1); border: 1px solid rgba(167, 139, 250, 0.3); padding: 15px; border-radius: 12px; text-align: center;">
+            <div style="font-size: 10px; text-transform: uppercase; color: var(--accent);">Featured</div>
+            <div style="font-size: 20px; font-weight: 700;" id="featuredCount">0</div>
+        </div>
+        <div class="stat-card"
+            style="grid-column: 1 / -1; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); padding: 10px; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 10px;">
+            <div id="statusDot" style="width: 8px; height: 8px; background: #10b981; border-radius: 50%;"></div>
+            <span id="statusText" style="font-size: 11px; color: rgba(148, 163, 184, 0.9);">System Status: Online</span>
         </div>
     </div>
     </aside>
@@ -1417,6 +1429,7 @@
         const ratingInput = document.getElementById('rating');
         const qualityInput = document.getElementById('quality');
         const genreInput = document.getElementById('genre');
+        const slideVideoInput = document.getElementById('slideVideo');
         const descriptionInput = document.getElementById('description');
         const isFeaturedInput = document.getElementById('isFeatured');
         const saveStreamBtn = document.getElementById('saveStreamBtn');
@@ -1940,6 +1953,7 @@
             ratingInput.value = '';
             qualityInput.value = '';
             genreInput.value = '';
+            slideVideoInput.value = '';
             descriptionInput.value = '';
             isFeaturedInput.checked = false;
             formError.style.display = 'none';
@@ -1969,6 +1983,7 @@
                 rating: ratingInput.value.trim(),
                 quality: qualityInput.value.trim(),
                 genre: genreInput.value.trim(),
+                slideVideo: slideVideoInput.value.trim(),
                 description: descriptionInput.value.trim(),
                 isFeatured: isFeaturedInput.checked
             };
@@ -2131,6 +2146,7 @@
             ratingInput.value = s.rating || '';
             qualityInput.value = s.quality || '';
             genreInput.value = s.genre || '';
+            slideVideoInput.value = s.slideVideo || '';
             descriptionInput.value = s.description || '';
             isFeaturedInput.checked = !!s.isFeatured;
             formError.style.display = 'none';

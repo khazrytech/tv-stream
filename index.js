@@ -17,6 +17,7 @@ const heroTag = document.getElementById('heroTag');
 const heroWatchBtn = document.getElementById('heroWatchBtn');
 const heroFavBtn = document.getElementById('heroFavoriteBtn');
 const heroProgress = document.getElementById('heroProgress');
+const heroVideo = document.getElementById('heroVideo');
 
 // IPTV Elements
 const sportsPlaylistSection = document.getElementById('sportsPlaylist');
@@ -47,6 +48,7 @@ let currentSlide = 0;
 let carouselInterval = null;
 let hls = null;
 let sportsHls = null;
+let heroHls = null;
 let notifications = [];
 let currentCategory = 'live-tv';
 let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
@@ -425,10 +427,36 @@ function updateCarousel() {
     if (!featuredStreams.length) return;
     const slide = featuredStreams[currentSlide];
 
+    // Background Image Fallback
+    const thumb = slide.thumbnail || `https://source.unsplash.com/1600x900/?${slide.category || 'tv'}`;
     if (heroSlider) {
-        const thumb = slide.thumbnail || `https://source.unsplash.com/1600x900/?${slide.category || 'tv'}`;
-        heroSlider.style.background = `linear-gradient(to right, rgba(15, 12, 41, 0.9), rgba(48, 43, 99, 0.5)), url('${thumb}') no-repeat center center/cover`;
+        heroSlider.style.background = `linear-gradient(to right, rgba(15, 12, 41, 0.95), rgba(48, 43, 99, 0.5)), url('${thumb}') no-repeat center center/cover`;
     }
+
+    // Video Preview Logic
+    if (heroVideo && slide.slideVideo) {
+        heroVideo.style.display = 'block';
+        if (heroHls) {
+            heroHls.destroy();
+            heroHls = null;
+        }
+
+        if (Hls.isSupported() && slide.slideVideo.endsWith('.m3u8')) {
+            heroHls = new Hls();
+            heroHls.loadSource(slide.slideVideo);
+            heroHls.attachMedia(heroVideo);
+            heroHls.on(Hls.Events.MANIFEST_PARSED, () => {
+                heroVideo.play().catch(() => { });
+            });
+        } else {
+            heroVideo.src = slide.slideVideo;
+            heroVideo.play().catch(() => { });
+        }
+    } else if (heroVideo) {
+        heroVideo.style.display = 'none';
+        heroVideo.src = '';
+    }
+
     if (heroTitle) heroTitle.textContent = slide.title;
     if (heroDescription) heroDescription.textContent = slide.description || `Watch ${slide.title} live on TV Stream.`;
     if (heroQuality) heroQuality.textContent = slide.quality || 'HD';
