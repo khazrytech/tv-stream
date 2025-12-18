@@ -194,9 +194,9 @@ app.get("/health", (req, res) => {
   }
 });
 
-// Root endpoint serves index.html (the updated UI)
+// Root endpoint serves TV-Stream-PRO.html (the updated PRO UI)
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
+  res.sendFile(path.join(__dirname, "TV-Stream-PRO.html"));
 });
 
 function readStreams() {

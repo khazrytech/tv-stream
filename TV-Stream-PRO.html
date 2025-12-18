@@ -6329,7 +6329,7 @@
             try {
                 const res = await fetch('/api/streams');
                 const data = await res.json();
-                const slideStreams = data.streams.filter(s => s.slideVideo);
+                const slideStreams = (data.liveStreams || []).filter(s => s.slideVideo);
 
                 if (slideStreams.length > 0) {
                     section.style.display = 'block';
