@@ -5,26 +5,28 @@
       "title": "Live TV Channel 1",
       "streamUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
       "category": "live-tv",
-      "thumbnail": "https://via.placeholder.com/300x450/667eea/ffffff?text=Live+1",
+      "thumbnail": "https://via.placeholder.com/1200x600/667eea/ffffff?text=Premium+Live+1",
       "year": "2024",
       "rating": "4.8",
       "description": "Experience the ultimate streaming platform with premium features",
       "quality": "1080p",
       "genre": "Entertainment",
-      "isFeatured": true
+      "isFeatured": true,
+      "slideVideo": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
     },
     {
       "id": 2,
       "title": "Live TV Channel 2",
-      "streamUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "streamUrl": "http://sample.vodobox.net/skate_phantom_flex_4k/skate_phantom_flex_4k.m3u8",
       "category": "live-tv",
-      "thumbnail": "https://via.placeholder.com/300x450/764ba2/ffffff?text=Live+2",
+      "thumbnail": "https://via.placeholder.com/1200x600/764ba2/ffffff?text=Premium+Live+2",
       "year": "2024",
       "rating": "4.7",
       "description": "Entertainment and news from around the world",
       "quality": "1080p",
       "genre": "News",
-      "isFeatured": true
+      "isFeatured": true,
+      "slideVideo": "http://sample.vodobox.net/skate_phantom_flex_4k/skate_phantom_flex_4k.m3u8"
     },
     {
       "id": 3,

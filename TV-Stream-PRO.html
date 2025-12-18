@@ -342,6 +342,7 @@
             font-weight: 800;
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
@@ -596,6 +597,409 @@
             transform: translateY(-50%);
             color: rgba(255, 255, 255, 0.5);
             cursor: pointer;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            left: -320px;
+            top: 0;
+            width: 300px;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.98);
+            backdrop-filter: blur(30px);
+            border-right: 1px solid var(--glass-border);
+            z-index: 20001;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            box-shadow: 20px 0 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .sidebar-close {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .sidebar-close:hover {
+            background: var(--accent);
+            transform: rotate(90deg);
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sidebar-link {
+            padding: 12px 20px;
+            border-radius: 12px;
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid transparent;
+        }
+
+        .sidebar-link:hover {
+            background: var(--glass);
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateX(10px);
+        }
+
+        .sidebar-link.active {
+            background: var(--gradient);
+            border-color: transparent;
+            box-shadow: 0 8px 20px rgba(0, 217, 255, 0.3);
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 20000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s;
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Hero Slide Video Section */
+        .slide-video-section {
+            width: 100%;
+            margin-bottom: 40px;
+            border-radius: 28px;
+            overflow: hidden;
+            position: relative;
+            background: #000;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+            display: none;
+            /* Hidden if no slide videos */
+        }
+
+        .slide-video-container {
+            width: 100%;
+            aspect-ratio: 21/9;
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .slide-video-container {
+                aspect-ratio: 16/9;
+            }
+        }
+
+        .slide-video-item {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide-video-item.active {
+            opacity: 1;
+            z-index: 1;
+        }
+
+        .slide-video-bg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.6);
+        }
+
+        .slide-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 800px;
+            padding: 30px;
+        }
+
+        .slide-title {
+            font-size: clamp(24px, 5vw, 48px);
+            font-weight: 900;
+            margin-bottom: 20px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+        }
+
+        .slide-play-btn {
+            padding: 15px 40px;
+            border-radius: 999px;
+            background: var(--gradient);
+            border: none;
+            color: #fff;
+            font-weight: 700;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 10px 30px rgba(0, 217, 255, 0.4);
+        }
+
+        .slide-play-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(0, 217, 255, 0.6);
+        }
+
+        /* Scrolling Text Marquee */
+        .scrolling-marquee {
+            width: 100%;
+            padding: 15px 0;
+            background: linear-gradient(90deg, transparent, rgba(0, 217, 255, 0.1), transparent);
+            border-top: 1px solid var(--glass-border);
+            border-bottom: 1px solid var(--glass-border);
+            overflow: hidden;
+            margin-bottom: 40px;
+        }
+
+        .marquee-content {
+            display: inline-block;
+            white-space: nowrap;
+            animation: marquee 30s linear infinite;
+        }
+
+        .marquee-content span {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-right: 100px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        @keyframes marquee {
+            0% {
+                transform: translateX(100%);
+            }
+
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        /* Footer Refinement */
+        .footer {
+            padding: 60px 0 20px;
+            background: rgba(10, 10, 15, 0.9);
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-logo {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .footer-text {
+            color: var(--muted);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .footer-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .footer-link {
+            color: var(--muted);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .footer-link:hover {
+            color: var(--primary);
+            padding-left: 5px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .social-btn:hover {
+            background: var(--primary);
+            transform: translateY(-5px);
+        }
+
+        .collapsible-about {
+            cursor: pointer;
+            padding: 20px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .collapsible-about:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .collapsible-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+            color: var(--muted);
+            line-height: 1.6;
+            padding-top: 0;
+        }
+
+        .collapsible-about.active .collapsible-content {
+            max-height: 500px;
+            padding-top: 15px;
+        }
+
+        .collapsible-about .fa-chevron-down {
+            transition: transform 0.3s;
+        }
+
+        .collapsible-about.active .fa-chevron-down {
+            transform: rotate(180deg);
+        }
+
+        /* Settings Modal Improvements */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .settings-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .settings-card:hover {
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background: var(--gradient);
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(26px);
         }
 
         .header-actions {
@@ -2997,73 +3401,95 @@
     <div class="background-grid" aria-hidden="true"></div>
     <div class="background-glow glow-1" aria-hidden="true"></div>
     <div class="background-glow glow-2" aria-hidden="true"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <img src="assets/tvstream-logo.png" alt="Logo" style="width: 32px; border-radius: 8px;">
+                <span
+                    style="font-weight: 800; font-size: 18px; background: var(--gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">MENU</span>
+            </div>
+            <button class="sidebar-close" onclick="toggleSidebar()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="#" class="sidebar-link active" onclick="toggleSidebar()">
+                <i class="fas fa-home"></i> Mwanzo
+            </a>
+            <a href="javascript:void(0)" class="sidebar-link" onclick="openAdvancedPlayer(); toggleSidebar();">
+                <i class="fas fa-play-circle"></i> IPTV Player
+            </a>
+            <a href="./football-ai.html" class="sidebar-link">
+                <i class="fas fa-brain"></i> Predictions
+            </a>
+            <a href="javascript:void(0)" class="sidebar-link" onclick="openAboutModal(); toggleSidebar();">
+                <i class="fas fa-info-circle"></i> Kuhusu Sisi
+            </a>
+            <a href="javascript:void(0)" class="sidebar-link" onclick="openSettingsModal(); toggleSidebar();">
+                <i class="fas fa-cog"></i> Mipangilio
+            </a>
+            <a href="https://t.me/techboy_tz" target="_blank" class="sidebar-link">
+                <i class="fab fa-telegram"></i> Join Telegram
+            </a>
+        </nav>
+        <div
+            style="margin-top: auto; padding: 20px; background: var(--glass); border-radius: 20px; border: 1px solid var(--glass-border); text-align: center;">
+            <p style="font-size: 12px; color: var(--muted); margin-bottom: 10px;">TV STREAM PRO v2.0</p>
+            <div class="social-links" style="justify-content: center;">
+                <a href="#" class="social-btn"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social-btn"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-btn"><i class="fab fa-tiktok"></i></a>
+            </div>
+        </div>
+    </aside>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
     <!-- Loading Spinner -->
     <div class="loading" id="loading">
         <div class="spinner"></div>
     </div>
 
     <!-- Header -->
-    <header class="header" data-animate>
+    <header class="header" id="mainHeader">
         <div class="header-content">
-            <div>
-                <h1 class="logo">
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <button class="icon-btn" id="sidebarToggle" onclick="toggleSidebar()"
+                    style="background: var(--glass); border: 1px solid var(--glass-border);">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="logo">
                     <img src="assets/tvstream-logo.png" alt="TV Stream" class="site-logo" />
-                    <span class="logo-text">TV Stream PRO</span>
-                </h1>
-                <p class="logo-subtitle">Realtime · Fluid · Personalized</p>
+                    <div style="display: flex; flex-direction: column;">
+                        <span class="logo-text">TV Stream PRO</span>
+                        <span class="logo-subtitle">Mubashara & Burudani</span>
+                    </div>
+                </div>
             </div>
             <div class="search-container">
-                <input type="text" class="search-box" id="searchBox" placeholder="Search movies, series, music..." />
+                <input type="text" class="search-box" id="searchBox" placeholder="Tafuta channel, movie, michezo..." />
                 <i class="fas fa-search search-icon"></i>
             </div>
-            <div class="header-quick-links">
-                <a class="quick-link" href="./TV-Stream-PRO.html">
-                    <i class="fas fa-house"></i>
-                    <span>Home</span>
-                </a>
-                <a class="quick-link" href="./TV-Stream-PRO.html#live-tv">
-                    <i class="fas fa-satellite-dish"></i>
-                    <span>Live TV</span>
-                </a>
-                <a class="quick-link" href="./TV-Stream-PRO.html#movies">
-                    <i class="fas fa-film"></i>
-                    <span>Movies</span>
-                </a>
-                <a class="quick-link" href="./TV-Stream-PRO.html#sports">
-                    <i class="fas fa-football"></i>
-                    <span>Sports</span>
-                </a>
-                <a class="quick-link" id="aiPredictionsLink" href="./football-ai.html">
-                    <i class="fas fa-robot"></i>
-                    <span>AI Predictions</span>
-                </a>
-                <!-- Boost TZ removed -->
-                <!-- Admin link removed per request -->
-            </div>
             <div class="header-actions">
-                <div class="icon-btn" id="notificationsBtn" title="Notifications">
+                <button class="icon-btn" id="notificationsBtn" onclick="toggleNotificationsPanel()"
+                    title="Notifications">
                     <i class="fas fa-bell"></i>
                     <span class="notification-badge" id="notificationBadge" style="display: none">0</span>
-                </div>
-                <div class="icon-btn" id="favoritesBtn" title="Favorites">
-                    <i class="fas fa-heart"></i>
-                </div>
-                <div class="icon-btn" id="settingsBtn" title="Settings">
+                </button>
+                <button class="icon-btn" onclick="openSettingsModal()" title="Mipangilio">
                     <i class="fas fa-cog"></i>
-                </div>
+                </button>
                 <div class="user-area">
                     <button class="user-pill" id="userMenuToggle" type="button">
-                        <div class="user-avatar" id="userAvatarInitial">
-                            TS
-                        </div>
+                        <div class="user-avatar">TS</div>
                         <div class="user-meta">
-                            <span class="user-label" id="userGreeting">Karibu</span>
+                            <span class="user-label">Karibu</span>
                             <strong id="userNameLabel">Mgeni</strong>
                         </div>
                         <i class="fas fa-chevron-down"></i>
                     </button>
                     <div class="user-menu" id="userMenu">
-                        <button type="button" id="openSettingsFromMenu">
+                        <button type="button" onclick="openSettingsModal()">
                             <i class="fas fa-sliders-h"></i>
                             <span>Personalize App</span>
                         </button>
@@ -3560,38 +3986,90 @@
 
     <div class="app-toast" id="appToast" role="status" aria-live="polite"></div>
 
-    <!-- Social Links -->
-    <section class="social-section section" id="social" data-animate style="--delay: 0.3s">
-        <div class="section-header" style="margin-bottom: 20px">
-            <h2 class="category-title" style="font-size: 32px">
-                Connect With Us
-            </h2>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="app-shell" style="padding-bottom: 0;">
+            <!-- Marquee before footer as requested -->
+            <div class="scrolling-marquee">
+                <div class="marquee-content" id="footerMarquee">
+                    <span><i class="fas fa-star"></i> Karibu TV Stream PRO - App bora kwa burudani ya kweli!</span>
+                    <span><i class="fas fa-bolt"></i> Tazama channel zaidi ya 1000+ bure kabisa.</span>
+                    <span><i class="fas fa-shield-halved"></i> Salama, Haraka na Yenye Muonekano wa Kisasa.</span>
+                    <span><i class="fas fa-heart"></i> Imetengenezwa kwa ajili yako - TechBoy TZ.</span>
+                </div>
+            </div>
+
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-logo">
+                        <span
+                            style="background: var(--gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">TV
+                            STREAM PRO</span>
+                    </div>
+                    <p class="footer-text">
+                        Tunakuletea ulimwengu wa burudani kiganjani mwako. Michezo, Filamu, na Habari zote katika
+                        platform moja.
+                    </p>
+                    <div class="social-links">
+                        <a href="https://facebook.com/khazrymakoi" target="_blank" class="social-btn"><i
+                                class="fab fa-facebook-f"></i></a>
+                        <a href="https://instagram.com/makoi_tz" target="_blank" class="social-btn"><i
+                                class="fab fa-instagram"></i></a>
+                        <a href="https://tiktok.com/@techboy-tz" target="_blank" class="social-btn"><i
+                                class="fab fa-tiktok"></i></a>
+                        <a href="https://t.me/techboy_tz" target="_blank" class="social-btn"><i
+                                class="fab fa-telegram-plane"></i></a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="footer-title">Kuhusu Sisi</h4>
+                    <div class="collapsible-about" onclick="this.classList.toggle('active')">
+                        <div class="collapsible-header">
+                            <span>Soma zaidi kuhusu platform</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="collapsible-content">
+                            TV Stream PRO ni jukwaa la kisasa linalowaunganisha watumiaji na maudhui mbalimbali ya
+                            kidijitali. Tunatumia teknolojia ya hali ya juu kuhakikisha unapata stream zenye ubora wa
+                            juu (HD) bila usumbufu. Daima tupo mstari wa mbele kuboresha mfumo wetu ili kukupa uzoefu
+                            bora zaidi kila siku.
+                        </div>
+                    </div>
+                    <div class="footer-links" style="margin-top: 20px;">
+                        <a href="javascript:void(0)" onclick="openAboutModal()" class="footer-link">Version Info</a>
+                        <a href="javascript:void(0)" onclick="openSettingsModal()" class="footer-link">App Settings</a>
+                        <a href="./football-ai.html" class="footer-link">AI Predictions</a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="footer-title">Msaada & Mawasiliano</h4>
+                    <div class="footer-links">
+                        <a href="mailto:support@techboy.tz" class="footer-link"><i class="fas fa-envelope"></i>
+                            makoikhazry@gmail.com</a>
+                        <a href="https://t.me/techboy_tz" target="_blank" class="footer-link"><i
+                                class="fab fa-telegram"></i> @techboy_tz</a>
+                        <a href="#" class="footer-link"><i class="fas fa-question-circle"></i> FAQ & Help Center</a>
+                    </div>
+                    <div
+                        style="margin-top: 30px; padding: 15px; background: rgba(0, 217, 255, 0.05); border-radius: 12px; border: 1px solid rgba(0, 217, 255, 0.1);">
+                        <small style="color: var(--primary); font-weight: 600;">NEW FEATURE!</small>
+                        <p style="font-size: 12px; margin-top: 5px;">Tumia AI Predictions kupata uchambuzi wa mechi zote
+                            kubwa duniani.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                style="padding: 20px 0; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; color: var(--muted); font-size: 13px;">
+                <p>&copy; 2025 TV Stream PRO. Haki Zote Zimehifadhiwa.</p>
+                <p style="margin-top: 5px;">Designed with <i class="fas fa-heart" style="color: #ff4757;"></i> by <a
+                        href="https://github.com/techboy-tz"
+                        style="color: var(--primary); text-decoration: none;">TechBoy TZ</a></p>
+            </div>
         </div>
-        <div class="social-grid">
-            <article class="social-card glass-panel">
-                <h4><i class="fab fa-tiktok"></i> TikTok</h4>
-                <a href="https://www.tiktok.com/@techboy-tz" target="_blank" rel="noopener">techboy-tz</a>
-                <small>Vipande vya haraka vya maboresho na sneak peeks.</small>
-            </article>
-            <article class="social-card glass-panel">
-                <h4><i class="fab fa-facebook"></i> Facebook</h4>
-                <a href="https://www.facebook.com/khazrymakoi" target="_blank" rel="noopener">Khazry Makoi</a>
-                <small>Pata masasisho marefu na community posts.</small>
-            </article>
-            <article class="social-card glass-panel">
-                <h4><i class="fab fa-instagram"></i> Instagram</h4>
-                <a href="https://www.instagram.com/makoi_tz" target="_blank" rel="noopener">@makoi_tz</a>
-                <small>Stories, makala na muonekano wa nyuma ya pazia.</small>
-            </article>
-            <article class="social-card glass-panel">
-                <h4><i class="fab fa-youtube"></i> YouTube</h4>
-                <a href="https://www.youtube.com/channel/UC5SAHE3iuyPU64DTdvUgssw" target="_blank"
-                    rel="noopener">HackerTick</a>
-                <small>Video tutorials na matangazo mapya ya TV Stream
-                    PRO.</small>
-            </article>
-        </div>
-    </section>
+    </footer>
 
     <!-- Bottom Scrolling Marquee -->
     <div class="bottom-marquee">
@@ -5828,6 +6306,119 @@
                 }
             }, { passive: true });
         })();
+        // Sidebar Logic
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            if (sidebar && overlay) {
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+                document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+            }
+        }
+
+        // Hero Slide Video Logic
+        let currentSlideIndex = 0;
+        let slideInterval;
+
+        async function initSlideVideos() {
+            const section = document.getElementById('slideVideoSection');
+            const container = document.getElementById('slideVideoContainer');
+            if (!container) return;
+
+            try {
+                const res = await fetch('/api/streams');
+                const data = await res.json();
+                const slideStreams = data.streams.filter(s => s.slideVideo);
+
+                if (slideStreams.length > 0) {
+                    section.style.display = 'block';
+                    container.innerHTML = slideStreams.map((s, idx) => `
+                        <div class="slide-video-item ${idx === 0 ? 'active' : ''}">
+                            <img src="${s.thumbnail || 'assets/hero-bg.jpg'}" class="slide-video-bg" alt="">
+                            <div class="slide-content">
+                                <h2 class="slide-title">${escapeHtml(s.title)}</h2>
+                                <button class="slide-play-btn" onclick="playStream(${s.id})">
+                                    <i class="fas fa-play"></i> Watch Now
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+
+                    startSlideRotation(slideStreams.length);
+                }
+            } catch (err) {
+                console.error("Failed to load slide videos", err);
+            }
+        }
+
+        function startSlideRotation(count) {
+            if (count <= 1) return;
+            if (slideInterval) clearInterval(slideInterval);
+            slideInterval = setInterval(() => {
+                const items = document.querySelectorAll('.slide-video-item');
+                items[currentSlideIndex].classList.remove('active');
+                currentSlideIndex = (currentSlideIndex + 1) % count;
+                items[currentSlideIndex].classList.add('active');
+            }, 8000);
+        }
+
+        // Settings Modal Logic
+        function openSettingsModal() {
+            const modal = document.getElementById('settingsPanel');
+            const overlay = document.getElementById('settingsOverlay');
+            if (modal && overlay) {
+                modal.classList.add('active');
+                overlay.classList.add('active');
+                modal.setAttribute('aria-hidden', 'false');
+            }
+        }
+
+        function closeSettingsModal() {
+            const modal = document.getElementById('settingsPanel');
+            const overlay = document.getElementById('settingsOverlay');
+            if (modal && overlay) {
+                modal.classList.remove('active');
+                overlay.classList.remove('active');
+                modal.setAttribute('aria-hidden', 'true');
+            }
+        }
+
+        // Add event listeners for settings elements
+        document.addEventListener('DOMContentLoaded', () => {
+            initSlideVideos();
+
+            // Override existing settings buttons if any
+            const settingsBtn = document.getElementById('settingsBtn');
+            if (settingsBtn) {
+                settingsBtn.onclick = openSettingsModal;
+            }
+            const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+            if (closeSettingsBtn) {
+                closeSettingsBtn.onclick = closeSettingsModal;
+            }
+            const settingsOverlay = document.getElementById('settingsOverlay');
+            if (settingsOverlay) {
+                settingsOverlay.onclick = closeSettingsModal;
+            }
+
+            // Dark Mode Toggle Logic
+            const themeSwitch = document.getElementById('themeSwitch');
+            if (themeSwitch) {
+                // Default to dark mode if not set
+                const currentTheme = localStorage.getItem('theme') || 'dark';
+                document.body.setAttribute('data-theme', currentTheme);
+                themeSwitch.checked = (currentTheme === 'light');
+
+                themeSwitch.addEventListener('change', (e) => {
+                    const theme = e.target.checked ? 'light' : 'dark';
+                    document.body.setAttribute('data-theme', theme);
+                    localStorage.setItem('theme', theme);
+                    notifyUser(`Tema imebadilishwa kuwa ${theme === 'light' ? 'Nyepesi' : 'Giza'}`);
+                });
+            }
+        });
+
         // Notifications Logic
 
         // Initialize
