@@ -3541,6 +3541,10 @@
                 <i class="fas fa-search search-icon"></i>
             </div>
             <div class="header-actions">
+                <button class="icon-btn" id="favoritesBtn" onclick="showFavorites()" title="Favorites">
+                    <i class="fas fa-heart"></i>
+                    <span class="notification-badge" id="favoritesBadge" style="display: none">0</span>
+                </button>
                 <button class="icon-btn" id="notificationsBtn" onclick="toggleNotificationsPanel()"
                     title="Notifications">
                     <i class="fas fa-bell"></i>
@@ -6119,12 +6123,18 @@
 
         function updateFavoritesButton() {
             const btn = document.getElementById("favoritesBtn");
+            const badge = document.getElementById("favoritesBadge");
             if (favorites.length > 0) {
                 btn.classList.add("active");
                 btn.title = `Favorites (${favorites.length})`;
+                if (badge) {
+                    badge.style.display = "flex";
+                    badge.textContent = favorites.length;
+                }
             } else {
                 btn.classList.remove("active");
                 btn.title = "Favorites";
+                if (badge) badge.style.display = "none";
             }
         }
 
@@ -6435,7 +6445,7 @@
                 items[currentSlideIndex].classList.remove('active');
                 currentSlideIndex = (currentSlideIndex + 1) % count;
                 items[currentSlideIndex].classList.add('active');
-            }, 8000);
+            }, 12000);
         }
 
         // Settings Modal Logic
@@ -6506,6 +6516,27 @@
 
             // Initialize Animations
             initAnimations();
+
+            // Keyboard Shortcuts
+            document.addEventListener("keydown", (e) => {
+                const isInput = ["INPUT", "TEXTAREA"].includes(document.activeElement.tagName);
+                if (isInput) return;
+
+                if (e.key === "Escape") {
+                    closeModal();
+                    if (typeof closeAboutModal === "function") closeAboutModal();
+                    if (typeof closeSettingsModal === "function") closeSettingsModal();
+                    if (typeof closeAdvancedPlayer === "function") closeAdvancedPlayer();
+                    const panel = document.getElementById("notificationsPanel");
+                    if (panel) panel.classList.remove("active");
+                }
+                if (e.key === "ArrowLeft") {
+                    if (typeof prevSlide === "function") prevSlide();
+                }
+                if (e.key === "ArrowRight") {
+                    if (typeof nextSlide === "function") nextSlide();
+                }
+            });
         });
 
         function initAnimations() {
