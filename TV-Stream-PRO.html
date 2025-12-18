@@ -254,6 +254,19 @@
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
         }
 
+        .footer-horizontal-group {
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+        }
+
+        @media (max-width: 768px) {
+            .footer-horizontal-group {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+
         .meta-chip {
             display: inline-flex;
             align-items: center;
@@ -679,6 +692,50 @@
             background: var(--gradient);
             border-color: transparent;
             box-shadow: 0 8px 20px rgba(0, 217, 255, 0.3);
+        }
+
+        /* Sidebar Group Logic */
+        .sidebar-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-sub {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            padding-left: 55px;
+            gap: 5px;
+        }
+
+        .sidebar-group.active .sidebar-sub {
+            max-height: 200px;
+            /* Adjust based on content */
+            margin-bottom: 15px;
+        }
+
+        .sidebar-group.active .arrow {
+            transform: rotate(90deg);
+        }
+
+        .sidebar-sub a {
+            padding: 8px 10px;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .sidebar-sub a:hover {
+            color: var(--primary);
+        }
+
+        .sidebar-link .arrow {
+            margin-left: auto;
+            transition: transform 0.3s;
+            font-size: 12px;
         }
 
         .sidebar-overlay {
@@ -3418,6 +3475,19 @@
             <a href="#" class="sidebar-link active" onclick="toggleSidebar()">
                 <i class="fas fa-home"></i> Mwanzo
             </a>
+
+            <div class="sidebar-group">
+                <div class="sidebar-link" onclick="this.parentElement.classList.toggle('active')">
+                    <i class="fas fa-list"></i> Kundi la Chaneli <i class="fas fa-chevron-right arrow"></i>
+                </div>
+                <div class="sidebar-sub">
+                    <a href="javascript:void(0)" onclick="jumpToCategory('live-tv'); toggleSidebar();">Live TV</a>
+                    <a href="javascript:void(0)" onclick="jumpToCategory('movies'); toggleSidebar();">Movies</a>
+                    <a href="javascript:void(0)" onclick="jumpToCategory('series'); toggleSidebar();">Series</a>
+                    <a href="javascript:void(0)" onclick="jumpToCategory('sports'); toggleSidebar();">Sports</a>
+                </div>
+            </div>
+
             <a href="javascript:void(0)" class="sidebar-link" onclick="openAdvancedPlayer(); toggleSidebar();">
                 <i class="fas fa-play-circle"></i> IPTV Player
             </a>
@@ -3513,6 +3583,13 @@
             <span>🌍 Tufuate kwenye mitandao ya kijamii kwa updates zaidi!</span>
         </div>
     </div>
+
+    <!-- Hero Slide Video Section (NEW) -->
+    <section class="slide-video-section" id="slideVideoSection">
+        <div class="slide-video-container" id="slideVideoContainer">
+            <!-- Dynamic content from initSlideVideos() -->
+        </div>
+    </section>
 
     <main class="app-shell">
         <!-- Search Results -->
@@ -4010,36 +4087,34 @@
                         Tunakuletea ulimwengu wa burudani kiganjani mwako. Michezo, Filamu, na Habari zote katika
                         platform moja.
                     </p>
-                    <div class="social-links">
-                        <a href="https://facebook.com/khazrymakoi" target="_blank" class="social-btn"><i
-                                class="fab fa-facebook-f"></i></a>
-                        <a href="https://instagram.com/makoi_tz" target="_blank" class="social-btn"><i
-                                class="fab fa-instagram"></i></a>
-                        <a href="https://tiktok.com/@techboy-tz" target="_blank" class="social-btn"><i
-                                class="fab fa-tiktok"></i></a>
-                        <a href="https://t.me/techboy_tz" target="_blank" class="social-btn"><i
-                                class="fab fa-telegram-plane"></i></a>
-                    </div>
                 </div>
 
-                <div>
-                    <h4 class="footer-title">Kuhusu Sisi</h4>
-                    <div class="collapsible-about" onclick="this.classList.toggle('active')">
-                        <div class="collapsible-header">
-                            <span>Soma zaidi kuhusu platform</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="collapsible-content">
-                            TV Stream PRO ni jukwaa la kisasa linalowaunganisha watumiaji na maudhui mbalimbali ya
-                            kidijitali. Tunatumia teknolojia ya hali ya juu kuhakikisha unapata stream zenye ubora wa
-                            juu (HD) bila usumbufu. Daima tupo mstari wa mbele kuboresha mfumo wetu ili kukupa uzoefu
-                            bora zaidi kila siku.
+                <div class="footer-horizontal-group">
+                    <div>
+                        <h4 class="footer-title">Kuhusu Sisi</h4>
+                        <div class="collapsible-about" onclick="this.classList.toggle('active')">
+                            <div class="collapsible-header">
+                                <span>Soma zaidi</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="collapsible-content">
+                                TV Stream PRO ni jukwaa la kisasa linalowaunganisha watumiaji na maudhui mbalimbali ya
+                                kidijitali. Tumerahisisha kila kitu kwa ajili yako.
+                            </div>
                         </div>
                     </div>
-                    <div class="footer-links" style="margin-top: 20px;">
-                        <a href="javascript:void(0)" onclick="openAboutModal()" class="footer-link">Version Info</a>
-                        <a href="javascript:void(0)" onclick="openSettingsModal()" class="footer-link">App Settings</a>
-                        <a href="./football-ai.html" class="footer-link">AI Predictions</a>
+                    <div>
+                        <h4 class="footer-title">Zitukute</h4>
+                        <div class="social-links" style="justify-content: flex-start;">
+                            <a href="https://facebook.com/khazrymakoi" target="_blank" class="social-btn"><i
+                                    class="fab fa-facebook-f"></i></a>
+                            <a href="https://instagram.com/makoi_tz" target="_blank" class="social-btn"><i
+                                    class="fab fa-instagram"></i></a>
+                            <a href="https://tiktok.com/@techboy-tz" target="_blank" class="social-btn"><i
+                                    class="fab fa-tiktok"></i></a>
+                            <a href="https://t.me/techboy_tz" target="_blank" class="social-btn"><i
+                                    class="fab fa-telegram-plane"></i></a>
+                        </div>
                     </div>
                 </div>
 
